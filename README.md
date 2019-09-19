@@ -1,2 +1,2 @@
 # garnett_cli
-command line interface for the Garnett cell type classification tool
+Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool
