@@ -88,18 +88,3 @@ export use_existing_outputs
 tests_file="${script_name%.*}".bats
 # Execute the tests
 $tests_file
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

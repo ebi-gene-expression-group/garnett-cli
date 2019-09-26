@@ -97,16 +97,3 @@
     [ -f $tsne_plot ]
     [ -f $tsne_plot_ext ]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
