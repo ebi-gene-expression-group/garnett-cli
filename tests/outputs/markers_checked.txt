@@ -1,0 +1,4 @@
+"marker_gene"	"gene_id"	"parent"	"cell_type"	"in_cds"	"nominates"	"total_nominated"	"exclusion_dismisses"	"inclusion_ambiguates"	"most_overlap"	"ambiguity"	"marker_score"	"summary"
+"1"	"CD3D"	"CD3D"	"root"	"T cells"	TRUE	268	268	268	0	NA	0	100	"Ok"
+"2"	"CD19"	"CD19"	"root"	"B cells"	TRUE	74	274	27	0	NA	0	27.007299270073	"Low nomination?"
+"3"	"MS4A1"	"MS4A1"	"root"	"B cells"	TRUE	247	274	200	0	NA	0	90.1459854014599	"Ok"
