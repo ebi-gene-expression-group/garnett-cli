@@ -24,7 +24,7 @@ option_list = list(
 		action = "store",
     	default = NA,
     	type = 'character',
-    	help = "AnnotatedDataFrame object; rows: cells, columns: cell attributes 
+    	help = "Table of phenotype data; rows: cells, columns: cell attributes 
     			(such as cell type, culture condition, day captured, etc.)"
     ),
 	make_option(
@@ -32,7 +32,7 @@ option_list = list(
 		action = "store",
     	default = NA,
     	type = 'character',
-    	help = "AnnotatedDataFrame object, rows:features (e.g. genes), columns:
+    	help = "Table of gene features, rows:features (e.g. genes), columns:
                 gene attributes (such as biotype, gc content, etc.)"
 	),
 	make_option(
