@@ -3,7 +3,7 @@ Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/gar
 Graphical representation of the general workflow:
 
 
-![](https://github.com/ebi-gene-expression-group/garnett_cli/blob/master/data/garnett_pipeline.png)
+![](https://github.com/ebi-gene-expression-group/garnett-cli/blob/master/garnett_pipeline.png)
 
 
 
