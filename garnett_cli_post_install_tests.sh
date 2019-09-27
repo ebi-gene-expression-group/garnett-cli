@@ -6,7 +6,9 @@
 
 script_name=$0
 # Initialise directories
-output_dir=`pwd`/outputs
+test_dir=`pwd`/test_dir
+output_dir=$test_dir'/outputs'
+mkdir -p $test_dir
 mkdir -p $output_dir
 
 function usage {
@@ -24,7 +26,8 @@ if [ "$action" != 'test' ] && [ "$action" != 'clean' ]; then
     usage
 fi
 
-if [ "$use_existing_outputs" != 'true' ] && [ "$use_existing_outputs" != 'false' ]; then
+if [ "$use_existing_outputs" != 'true' ] &&\
+   [ "$use_existing_outputs" != 'false' ]; then
     echo "Invalid value ($use_existing_outputs) for 'use_existing_outputs'"
     usage
 fi
@@ -34,6 +37,7 @@ fi
 if [ "$action" = 'clean' ]; then
     echo "Cleaning up $output_dir ..."
     rm -rf $output_dir
+
     exit 0
 fi 
 
@@ -42,9 +46,12 @@ fi
 ################################################################################
 
 # Main inputs for the workflow
-export CDS='./test_cds.rds'
-export marker_file='./test_marker_file.txt'
-export primary_classifier='./test_classifier.rds'
+export CDS=$test_dir'/test_cds.rds'
+export marker_file=$test_dir'/test_marker_file.txt'
+#export primary_classifier='./test_classifier.rds'
+# import test CDS from the package
+./garnett_import_test_data.R -c $CDS -m $marker_file
+echo "CDS imported"
 
 # Make raw test data from provided CDS object 
 export expr_mat=$output_dir'/expression_matrix.txt'

@@ -39,20 +39,22 @@ option_list = list(
 		help = 'Output path for feature data' 
 	)
 )
-opt = wsc_parse_args(option_list, mandatory=c("input_file", "expr_matrix", "pheno_data", "feature_data"))
+opt = wsc_parse_args(option_list, mandatory=c("input_file", "expr_matrix",
+                                              "pheno_data", "feature_data"))
 
 suppressPackageStartupMessages(library(garnett))
-#suppressPackageStartupMessages(library(monocle))
 
 cds = readRDS(opt$input_file)
 matrix = exprs(cds)
 writeMM(matrix, file = opt$expr_matrix)
 
 pData = data.frame(cds@phenoData@data)
-write.table(pData, file = opt$pheno_data, sep="\t", row.names = TRUE, col.names = TRUE)
+write.table(pData, file = opt$pheno_data, sep="\t", row.names = TRUE,
+            col.names = TRUE)
 
 fData = data.frame(cds@featureData@data)
-write.table(fData, file = opt$feature_data, sep="\t", row.names = TRUE, col.names = TRUE)
+write.table(fData, file = opt$feature_data, sep="\t", row.names = TRUE,
+            col.names = TRUE)
 
 
 

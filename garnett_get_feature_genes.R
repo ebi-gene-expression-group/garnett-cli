@@ -10,18 +10,6 @@ suppressPackageStartupMessages(require(workflowscriptscommon))
 
 
 # Obtain a list of genes used as features in classification model
-# inputs:
-#	- classifier object: path to the object of class garnett_classifier, which
-#						 is either trained via garnett_train_classifier.R or
-#						 obtained previously
-#	- node: in case a hierarchical marker tree was used to train the classifier,
-#			specify which node features should be shown. Default is 'root'.
-#			For other nodes, use the corresponding parent cell type name.
-#	- db: argument for Bioconductor AnnotationDb-class package used for 
-#		  converting gene IDs.
-#	- output file path 
-#	- convert_ids: boolean that indicates whether the gene IDs need to be 
-#				   converted into SYMBOL notation. Default: False
 
 # parse options 
 option_list = list(
@@ -56,6 +44,7 @@ option_list = list(
 		c("--convert-ids"),
 		action = "store_true",
 		default = FALSE,
+        type = 'logical',
 		help = "Boolean that indicates whether the gene IDs should be converted
 				into SYMBOL notation. Default: FALSE"
 	),
@@ -102,29 +91,3 @@ feature_genes = get_feature_genes(pbmc_classifier, node = opt$node,
 
 write.table(feature_genes, opt$output_path, sep = "\t") 
 print(paste("Output file is written to ", opt$output_path))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

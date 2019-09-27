@@ -5,15 +5,8 @@ suppressPackageStartupMessages(require(optparse))
 # Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
-
-# create a CDS object from raw expression matrix. The CDS will then be used as input in further steps of the workflow
-# inputs: 
-#	- exprs, a numeric matrix of expression values; rows: genes, columns: cells
-#	- phenoData, an AnnotatedDataFrame object; rows: cells, columns: cell attributes
-# 	  (such as cell type, culture condition, day captured, etc.) 
-#	- featureData, an AnnotatedDataFrame object, rows:features (e.g. genes), columns: gene attributes 
-#	  (such as biotype, gc content, etc.)
-
+# create a CDS object from raw expression matrix. The CDS will then be used as
+# input in further steps of the workflow
 
 # parse options 
 option_list = list(
@@ -23,7 +16,8 @@ option_list = list(
     	default = NA,
     	type = 'character',
     	help = "Numeric matrix of expression values; rows: genes, columns: cells.
-    			See http://cole-trapnell-lab.github.io/monocle-release/docs/#getting-started-with-monocle for explanation"
+    	See http://cole-trapnell-lab.github.io/monocle-release/docs/#getting-started-with-monocle
+        for explanation"
 	), 
 	make_option(
 		c("-p", "--phenotype-data"),
@@ -38,8 +32,8 @@ option_list = list(
 		action = "store",
     	default = NA,
     	type = 'character',
-    	help = "AnnotatedDataFrame object, rows:features (e.g. genes), columns: gene attributes 
-    			(such as biotype, gc content, etc.)"
+    	help = "AnnotatedDataFrame object, rows:features (e.g. genes), columns:
+                gene attributes (such as biotype, gc content, etc.)"
 	),
 	make_option(
 		c("-o", "--output-file"),
@@ -50,7 +44,8 @@ option_list = list(
 	)
 )
 
-opt = wsc_parse_args(option_list, mandatory = c('expression_matrix', 'phenotype_data', 'feature_data', 'output_file'))
+opt = wsc_parse_args(option_list, mandatory = c('expression_matrix', 
+                     'phenotype_data', 'feature_data', 'output_file'))
 
 # check parameters are correctly defined 
 if(! file.exists(opt$expression_matrix)){

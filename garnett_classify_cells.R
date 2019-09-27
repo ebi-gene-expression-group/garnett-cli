@@ -8,25 +8,8 @@ suppressPackageStartupMessages(require(optparse))
 # Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
-
 # Classify cells into cell types using a pre-trained classifier or one obtained
 # via garnett_train_classifier.R 
-# input:
-#	- cds: object of CellDataSet class which holds gene expression data. 
-#		   After classification is obtained, the column with classes is added to
-#		   the pData of gene expression table. NB: running the script again on 
-#		   the same CDS will cause an error. Delete the classification column to
-#		   repeat classificaion.	 
-#	- classifier: garnett_classifier class object obtained previously
-#	- db: argument for Bioconductor AnnotationDb-class package used for
-#		  converting gene IDs.
-#	- cds_gene_id_type: the format of the gene IDs in your CDS object
-#	- cluster_extend: boolean, tells Garnett whether to create a second set of 
-#	  assignments that expands classifications to cells in the same cluster
-#	- plot_output_path: output path for the t-SNE plots. In case
-# 					    --cluster-extend is provided, two plots will be made. 
-#					    If no path is provided, plots will not be produced
-
 
 # parse options 
 option_list = list(
@@ -59,7 +42,7 @@ option_list = list(
     			Homo Sapiens genes."
 	),
 	make_option(
-		c("--cds-gene-type"),
+		c("--cds-gene-id-type"),
 		action = "store",
 		default = "ENSEMBL",
     	type = 'character',
@@ -69,10 +52,28 @@ option_list = list(
 	make_option(
 		c("-e", "--cluster-extend"),
 		action = "store_true",
-		default = FALSE, 
+		default = TRUE, 
+		type = 'logical',
 		help = "Boolean, tells Garnett whether to create a second set of
 				assignments that expands classifications to cells in the same
-				cluster. Default: FALSE"
+				cluster. Default: TRUE"
+	),
+	make_option(
+		c("--rank-prob-ratio"),
+		action = "store",
+		default = 1.5,
+		type = 'double',
+		help = "Numeric value greater than 1. This is the minimum odds ratio
+	    between the probability of the most likely cell type to the second most
+	    likely cell type to allow assignment. Default is 1.5. 
+	    Higher values are more conservative."
+	),
+	make_option(
+		c("-v", "--verbose"),
+		action = "store_true",
+		default = FALSE,
+		type = 'logical',
+		help = "Logical. Should progress messages be printed. Default: FASLE."
 	),
 	make_option(
 		c("-p", "--plot-output-path"),
@@ -88,7 +89,6 @@ option_list = list(
 opt = wsc_parse_args(option_list, mandatory = c("cds_object",
 												"classifier_object",
 												"database"))
-print(opt)
 
 # check input is correct
 if(! file.exists(opt$cds_object)){
@@ -119,7 +119,7 @@ pbmc_classifier = readRDS(opt$classifier_object)
 pbmc_cds = classify_cells(pbmc_cds, pbmc_classifier,
 						  db = opt$database, 
 						  cluster_extend = opt$cluster_extend, 
-						  cds_gene_id_type = opt$cds_gene_type)	
+						  cds_gene_id_type = opt$cds_gene_id_type)	
 
 saveRDS(pbmc_cds, file = opt$cds_object)
 
@@ -130,7 +130,6 @@ if(! is.na(opt$plot_output_path)){
 	png(file = opt$plot_output_path)
 	print(qplot(tsne_1, tsne_2, color = cell_type,
 				data = pData(pbmc_cds)) + theme_bw())
-	print("plotting is happening")
 	dev.off()
 	if(opt$cluster_extend){
 		path = paste(strsplit(opt$plot_output_path,
@@ -139,9 +138,6 @@ if(! is.na(opt$plot_output_path)){
 		png(file = path)
 		print(qplot(tsne_1, tsne_2, color = cluster_ext_type, 
 					data = pData(pbmc_cds)) + theme_bw())
-		print("plotting is happening again")
 		dev.off()
 	}
 }
-
-
