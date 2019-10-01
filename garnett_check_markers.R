@@ -12,62 +12,62 @@ suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # parse options 
 option_list = list(
-	make_option(
-		c("-c", "--cds-object"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "CDS object with expression data"
-	),
-	make_option(
-		c("-m", "--marker-file-path"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "File with marker genes specifying cell types. See 
+    make_option(
+        c("-c", "--cds-object"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "CDS object with expression data"
+    ),
+    make_option(
+        c("-m", "--marker-file-path"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "File with marker genes specifying cell types. See 
         https://cole-trapnell-lab.github.io/garnett/docs/#constructing-a-marker-file
-    	for specification of the file format."
-	),
-	make_option(
-		c("-d", "--database"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "argument for Bioconductor AnnotationDb-class package
+        for specification of the file format."
+    ),
+    make_option(
+        c("-d", "--database"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "argument for Bioconductor AnnotationDb-class package
                 used for converting gene IDs.
-    			For example, use org.Hs.eg.db for Homo Sapiens genes."
-	),
-	make_option(
-		c("--cds-gene-id-type"),
-		action = "store",
-		default = "ENSEMBL",
-    	type = 'character',
-    	help = "Format of the gene IDs in your CDS object.
+                For example, use org.Hs.eg.db for Homo Sapiens genes."
+    ),
+    make_option(
+        c("--cds-gene-id-type"),
+        action = "store",
+        default = "ENSEMBL",
+        type = 'character',
+        help = "Format of the gene IDs in your CDS object.
                 The default is \"ENSEMBL\"."
-	),
-	make_option(
-		c("--marker-file-gene-id-type"),
-		action = "store",
-		default = "SYMBOL",
-    	type = 'character',
-    	help = "Format of the gene IDs in your marker file.
+    ),
+    make_option(
+        c("--marker-file-gene-id-type"),
+        action = "store",
+        default = "SYMBOL",
+        type = 'character',
+        help = "Format of the gene IDs in your marker file.
                 The default is \"ENSEMBL\"."
-	),
-	make_option(
-		c("-o", "--marker-output-path"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "Path to the output file with marker scores"
-	),
-	make_option(
-		c("--plot-output-path"),
-		action = "store",
-		default = NA,
-		type = 'character',
-		help = "Optional. If you would like to make a marker plot,
+    ),
+    make_option(
+        c("-o", "--marker-output-path"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Path to the output file with marker scores"
+    ),
+    make_option(
+        c("--plot-output-path"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Optional. If you would like to make a marker plot,
                 provide a name (path) for it."
-	),
+    ),
     make_option(
         c("--propogate-markers"),
         action = "store_true",
@@ -115,22 +115,22 @@ option_list = list(
 )
 
 opt = wsc_parse_args(option_list, mandatory = c('cds_object', 'marker_file_path',
-                                            'database', 'marker_output_path'))
+                                                'database', 'marker_output_path'))
 
 # check parameters are correctly defined 
 if(! file.exists(opt$cds_object)){
-	stop((paste('File ', opt$cds_object, 'does not exist')))
+    stop((paste('File ', opt$cds_object, 'does not exist')))
 }
 
 if(! file.exists(opt$marker_file_path)){
-	stop((paste('File ', opt$marker_file_path, 'does not exist')))
+    stop((paste('File ', opt$marker_file_path, 'does not exist')))
 }
 
 # load the database. pacman downloads the package if it's not installed 
 tryCatch({
-	p_load(opt$database, character.only = TRUE)},
-	warning = function(w){
-	stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
+    p_load(opt$database, character.only = TRUE)},
+    warning = function(w){
+    stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
 )
 
 # convert string into variable 
@@ -144,19 +144,19 @@ pbmc_cds = readRDS(opt$cds_object)
 
 # run the core function 
 marker_check = check_markers(pbmc_cds, opt$marker_file_path,
-							 db = opt$database, 
+                             db = opt$database, 
                              cds_gene_id_type = opt$cds_gene_id_type,
-							 marker_file_gene_id_type = opt$marker_file_gene_id_type, 
+                             marker_file_gene_id_type = opt$marker_file_gene_id_type, 
                              propogate_markers = opt$propogate_markers,
                              use_tf_idf = opt$use_tf_idf,
                              classifier_gene_id_type = opt$classifier_gene_id_type)
 
 if(! is.na(opt$plot_output_path)){
-	print(paste("plotting path", opt$plot_output_path))
-	png(filename = opt$plot_output_path)
-	print(plot_markers(marker_check, amb_marker_cutoff = opt$amb_marker_cutoff,
+    print(paste("plotting path", opt$plot_output_path))
+    png(filename = opt$plot_output_path)
+    print(plot_markers(marker_check, amb_marker_cutoff = opt$amb_marker_cutoff,
                        label_size = opt$label_size))
-	dev.off()
+    dev.off()
 }
 
 print(marker_check)

@@ -15,54 +15,54 @@ n_cores = detectCores()
 
 # parse options 
 option_list = list(
-	make_option(
-		c("-c", "--cds-object"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "CDS object with expression data"
-	),
-	make_option(
-		c("-m", "--marker-file-path"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "File with marker genes specifying cell types. 
-        See https://cole-trapnell-lab.github.io/garnett/docs/#constructing-a-marker-file
-    	for specification of the file format."
+    make_option(
+        c("-c", "--cds-object"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "CDS object with expression data"
     ),
     make_option(
-		c("-d", "--database"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "argument for Bioconductor AnnotationDb-class package used
+        c("-m", "--marker-file-path"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "File with marker genes specifying cell types. 
+        See https://cole-trapnell-lab.github.io/garnett/docs/#constructing-a-marker-file
+        for specification of the file format."
+    ),
+    make_option(
+        c("-d", "--database"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "argument for Bioconductor AnnotationDb-class package used
                 for converting gene IDs
-    			For example, use org.Hs.eg.db for Homo Sapiens genes."
-	),
-	make_option(
-		c("--cds-gene-id-type"),
-		action = "store",
-		default = "ENSEMBL",
-    	type = 'character',
-    	help = "Format of the gene IDs in your CDS object. 
+                For example, use org.Hs.eg.db for Homo Sapiens genes."
+    ),
+    make_option(
+        c("--cds-gene-id-type"),
+        action = "store",
+        default = "ENSEMBL",
+        type = 'character',
+        help = "Format of the gene IDs in your CDS object. 
         The default is \"ENSEMBL\"."
-	),
-	make_option(
-		c("--marker-file-gene-id-type"),
-		action = "store",
-		default = "SYMBOL",
-    	type = 'character',
-    	help = "Format of the gene IDs in your marker file.
+    ),
+    make_option(
+        c("--marker-file-gene-id-type"),
+        action = "store",
+        default = "SYMBOL",
+        type = 'character',
+        help = "Format of the gene IDs in your marker file.
         The default is \"SYMBOL\"."
-	),
-	make_option(
-		c("-n", "--num-unknown"),
-		action = "store",
-		default = 500,
-    	type = "integer",
-    	help = "Number of outgroups to compare against. Default %default."
-	),
+    ),
+    make_option(
+        c("-n", "--num-unknown"),
+        action = "store",
+        default = 500,
+        type = "integer",
+        help = "Number of outgroups to compare against. Default %default."
+    ),
     make_option(
         c("--min-observations"),
         action = "store",
@@ -115,13 +115,13 @@ option_list = list(
         If possible for your organism, this should be 'ENSEMBL', which is
         the default. Ignored if db = 'none'."
     ),
-	make_option(
-		c("-o", "--output-path"),
-		action = "store",
-		default = NA,
-    	type = 'character',
-    	help = "Path to the output file"
-	)
+    make_option(
+        c("-o", "--output-path"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Path to the output file"
+    )
 )
 
 opt = wsc_parse_args(option_list, mandatory=c("cds_object", "marker_file_path", 
@@ -129,18 +129,18 @@ opt = wsc_parse_args(option_list, mandatory=c("cds_object", "marker_file_path",
 
 # check parameters are correctly defined 
 if(! file.exists(opt$cds_object)){
-	stop((paste('File ', opt$cds_object, 'does not exist')))
+    stop((paste('File ', opt$cds_object, 'does not exist')))
 }
 
 if(! file.exists(opt$marker_file_path)){
-	stop((paste('File ', opt$marker_file_path, 'does not exist')))
+    stop((paste('File ', opt$marker_file_path, 'does not exist')))
 }
 
 # load the database. pacman downloads the package if it hasn't been downloaded before 
 tryCatch({
-	p_load(opt$database, character.only = TRUE)},
-	warning = function(w){
-	stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
+    p_load(opt$database, character.only = TRUE)},
+    warning = function(w){
+    stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
 )
 
 # convert string into variable 

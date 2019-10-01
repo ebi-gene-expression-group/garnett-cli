@@ -31,8 +31,3 @@ if(file.exists(path)){
     stop("Warning: cannot extract test data: marker file does not exist.")
 }
 saveRDS(test_cds, file = opt$cds_object)
-
-
-
-
-

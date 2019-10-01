@@ -26,7 +26,7 @@ parse_expr_data.R --expression-matrix <numeric matrix with expression values in 
                   --output-file <path to output file in .rds format> 
 ```
 
-Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of required file file structure.
+Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of file structure.
 
 ### Check marker file 
 In order to verify that markers provide an accurate representation of corresponding cell types, run the following script:

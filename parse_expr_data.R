@@ -10,38 +10,38 @@ suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # parse options 
 option_list = list(
-	make_option(
-		c("-e", "--expression-matrix"),
-		action = "store",
-    	default = NA,
-    	type = 'character',
-    	help = "Numeric matrix of expression values; rows: genes, columns: cells.
-    	See http://cole-trapnell-lab.github.io/monocle-release/docs/#getting-started-with-monocle
+    make_option(
+        c("-e", "--expression-matrix"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Numeric matrix of expression values; rows: genes, columns: cells.
+        See http://cole-trapnell-lab.github.io/monocle-release/docs/#getting-started-with-monocle
         for explanation"
-	), 
-	make_option(
-		c("-p", "--phenotype-data"),
-		action = "store",
-    	default = NA,
-    	type = 'character',
-    	help = "Table of phenotype data; rows: cells, columns: cell attributes 
-    			(such as cell type, culture condition, day captured, etc.)"
+    ), 
+    make_option(
+        c("-p", "--phenotype-data"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Table of phenotype data; rows: cells, columns: cell attributes 
+                (such as cell type, culture condition, day captured, etc.)"
     ),
-	make_option(
-		c("-f", "--feature-data"),
-		action = "store",
-    	default = NA,
-    	type = 'character',
-    	help = "Table of gene features, rows:features (e.g. genes), columns:
+    make_option(
+        c("-f", "--feature-data"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Table of gene features, rows:features (e.g. genes), columns:
                 gene attributes (such as biotype, gc content, etc.)"
-	),
-	make_option(
-		c("-o", "--output-file"),
-		action = "store",
-    	default = NA,
-    	type = 'character',
-    	help = "output file for CDS object in .rds format"
-	)
+    ),
+    make_option(
+        c("-o", "--output-file"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "output file for CDS object in .rds format"
+    )
 )
 
 opt = wsc_parse_args(option_list, mandatory = c('expression_matrix', 
@@ -49,15 +49,15 @@ opt = wsc_parse_args(option_list, mandatory = c('expression_matrix',
 
 # check parameters are correctly defined 
 if(! file.exists(opt$expression_matrix)){
-	stop((paste('File ', opt$expression_matrix, 'does not exist')))
+    stop((paste('File ', opt$expression_matrix, 'does not exist')))
 }
 
 if(! file.exists(opt$phenotype_data)){
-	stop((paste('File ', opt$phenotype_data, 'does not exist')))
+    stop((paste('File ', opt$phenotype_data, 'does not exist')))
 }
 
 if(! file.exists(opt$feature_data)){
-	stop((paste('File ', opt$feature_data, 'does not exist')))
+    stop((paste('File ', opt$feature_data, 'does not exist')))
 }
 
 
@@ -72,10 +72,3 @@ fd = new("AnnotatedDataFrame", data = read.table(opt$feature_data))
 cds = newCellDataSet(as.matrix(expr_matrix), phenoData = pd, featureData = fd)
 cds = estimateSizeFactors(cds)
 saveRDS(cds, file = opt$output_file)
-
-
-
-
-
-
-
