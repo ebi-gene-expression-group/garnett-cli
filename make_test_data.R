@@ -42,7 +42,7 @@ option_list = list(
 opt = wsc_parse_args(option_list, mandatory=c("input_file", "expr_matrix",
                                               "pheno_data", "feature_data"))
 
-suppressPackageStartupMessages(library(garnett))
+suppressPackageStartupMessages(require(garnett))
 
 cds = readRDS(opt$input_file)
 matrix = exprs(cds)

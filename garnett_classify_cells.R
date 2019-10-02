@@ -2,7 +2,7 @@
 
 
 # package management
-suppressPackageStartupMessages(require(pacman))
+#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -99,13 +99,14 @@ if(! file.exists(opt$classifier_object)){
     stop(paste("File", opt$classifier_object, "does not exist."))
 }
 
-tryCatch({
-    p_load(opt$database, character.only = TRUE)},
-    warning = function(w){
-        stop((paste('Database', opt$database,
-                    'was not found on Bioconductor')))}
-)
+# tryCatch({
+#     p_load(opt$database, character.only = TRUE)},
+#     warning = function(w){
+#         stop((paste('Database', opt$database,
+#                     'was not found on Bioconductor')))}
+# )
 
+suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
 
@@ -126,7 +127,7 @@ saveRDS(pbmc_cds, file = opt$cds_object)
 # if plot output is provided, do plotting step 
 print(opt$plot_output_path)
 if(! is.na(opt$plot_output_path)){
-    p_load(ggplot2)
+    suppressPackageStartupMessages(require(ggplot2))
     png(file = opt$plot_output_path)
     print(qplot(tsne_1, tsne_2, color = cell_type,
                 data = pData(pbmc_cds)) + theme_bw())
