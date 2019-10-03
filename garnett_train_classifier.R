@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 # package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -109,7 +108,7 @@ option_list = list(
     make_option(
         c("--classifier-gene-id-type"),
         action = "store",
-        default = "ENSEMBL",
+        default = "ENSEMBL", #TODO: change back to ensembl ? 
         type = 'character',
         help = "Optional. The type of gene ID that will be used in the classifier.
         If possible for your organism, this should be 'ENSEMBL', which is
@@ -172,7 +171,6 @@ pbmc_classifier = train_cell_classifier(cds = pbmc_cds,
                                          propogate_markers = opt$propogate_markers,
                                          cores = opt$cores, 
                                          lambdas = lambdas,
-                                         classifier_gene_id_type = opt$classifier_gene_id_type
-                                         )
+                                         classifier_gene_id_type = opt$classifier_gene_id_type)
 
 saveRDS(pbmc_classifier, file = opt$output_path)

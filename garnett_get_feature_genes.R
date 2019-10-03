@@ -61,6 +61,8 @@ option_list = list(
 opt = wsc_parse_args(option_list, mandatory=c("classifier_object", "database",
                                               "output_path"))
 
+print(opt)
+
 # check input parameters 
 if(! file.exists(opt$classifier_object)){
     stop((paste('File ', opt$classifier_object, 'does not exist')))

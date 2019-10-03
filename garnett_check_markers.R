@@ -74,8 +74,8 @@ option_list = list(
         default = TRUE,
         type = 'logical',
         help = "Optional. Should markers from child nodes of a cell type be used
-        in finding representatives of the parent type?
-        Default: TRUE."
+                in finding representatives of the parent type?
+                Default: TRUE."
     ),
     make_option(
         c("--use-tf-idf"),
@@ -83,9 +83,9 @@ option_list = list(
         default = TRUE,
         type = 'logical',
         help = "Optional. Should TF-IDF matrix be calculated during estimation?
-        If TRUE, estimates will be more accurate, but calculation is slower
-        with very large datasets.
-        Default: TRUE."
+                If TRUE, estimates will be more accurate, but calculation is slower
+                with very large datasets.
+                Default: TRUE."
     ),
     make_option(
         c("--classifier-gene-id-type"),
@@ -93,8 +93,8 @@ option_list = list(
         default = "ENSEMBL",
         type = 'character',
         help = "Optional. The type of gene ID that will be used in the
-        classifier. If possible for your organism, this should be 'ENSEMBL',
-        which is the default. Ignored if db = 'none'."
+                classifier. If possible for your organism, this should be 'ENSEMBL',
+                which is the default. Ignored if db = 'none'."
     ),
     make_option(
         c("--amb-marker-cutoff"),

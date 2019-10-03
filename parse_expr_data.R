@@ -5,8 +5,8 @@ suppressPackageStartupMessages(require(optparse))
 # Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
-# create a CDS object from raw expression matrix. The CDS will then be used as
-# input in further steps of the workflow
+# create a CDS object from raw expression matrix. 
+# The CDS will then be used as input in further steps of the workflow
 
 # parse options 
 option_list = list(
@@ -45,7 +45,9 @@ option_list = list(
 )
 
 opt = wsc_parse_args(option_list, mandatory = c('expression_matrix', 
-                     'phenotype_data', 'feature_data', 'output_file'))
+                                                'phenotype_data',
+                                                'feature_data', 
+                                                'output_file'))
 
 # check parameters are correctly defined 
 if(! file.exists(opt$expression_matrix)){
@@ -66,9 +68,14 @@ suppressPackageStartupMessages(require(garnett))
 
 
 # initialise the CDS object 
-expr_matrix = readMM(opt$expression_matrix)
-pd = new("AnnotatedDataFrame", data = read.table(opt$phenotype_data))
-fd = new("AnnotatedDataFrame", data = read.table(opt$feature_data))
-cds = newCellDataSet(as.matrix(expr_matrix), phenoData = pd, featureData = fd)
+expr_matrix = Matrix::readMM(opt$expression_matrix)
+pData = read.table(opt$phenotype_data)
+fData = read.table(opt$feature_data)
+row.names(expr_matrix) = row.names(fData)
+colnames(expr_matrix) = row.names(pData)
+
+pd = new("AnnotatedDataFrame", data = pData)
+fd = new("AnnotatedDataFrame", data = fData)
+cds = newCellDataSet(as(expr_matrix, "dgCMatrix"), phenoData = pd, featureData = fd)
 cds = estimateSizeFactors(cds)
 saveRDS(cds, file = opt$output_file)

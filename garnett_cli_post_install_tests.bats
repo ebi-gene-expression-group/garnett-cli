@@ -1,34 +1,35 @@
 #!/usr/bin/env bats
 
-@test "Make raw test data from provided CDS object" {
+@test "Obtain raw data from the package" {
     if [ "$use_existing_outputs" = 'true' ] && [ -f "$expr_mat" ]; then
         skip "$expr_mat exists and use_existing_outputs is set to 'true'"
     fi
     run rm -f $expr_mat $pheno_data $feature_data\
-        && ./make_test_data.R --input-file $CDS\
-                                 --expr-matrix $expr_mat\
-                                 --pheno-data $pheno_data\
-                                 --feature-data $feature_data
+        && ./make_test_data.R --marker-file $marker_file\
+                              --expr-matrix $expr_mat\
+                              --pheno-data $pheno_data\
+                              --feature-data $feature_data
     echo "status = ${status}"
     echo "output = ${output}"    
     [ "$status" -eq 0 ]
-    [ -f  "$expr_mat" ]
-    [ -f  "$pheno_data" ]
-    [ -f  "$feature_data" ]
+    [ -f "$marker_file" ]
+    [ -f "$expr_mat" ]
+    [ -f "$pheno_data" ]
+    [ -f "$feature_data" ]
 }
 
-@test "Parse raw data back into CDS object " {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$CDS_rebuilt" ]; then
+@test "Parse raw data into CDS object " {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$CDS" ]; then
         skip "$CDS_rebuilt exists and use_existing_outputs is set to 'true'"
     fi
-    run rm -f $CDS_rebuilt && ./parse_expr_data.R -e $expr_mat\
-                                                     -p $pheno_data\
-                                                     -f $feature_data\
-                                                     -o $CDS_rebuilt
+    run rm -f $CDS && ./parse_expr_data.R -e $expr_mat\
+                                          -p $pheno_data\
+                                          -f $feature_data\
+                                          -o $CDS
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
-    [ -f $CDS_rebuilt ]
+    [ -f $CDS ]
 }
 
 @test "Check marker file" {

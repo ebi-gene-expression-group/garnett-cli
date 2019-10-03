@@ -48,18 +48,14 @@ fi
 # Main inputs for the workflow
 export CDS=$test_dir'/test_cds.rds'
 export marker_file=$test_dir'/test_marker_file.txt'
-#export primary_classifier='./test_classifier.rds'
-# import test CDS from the package
-./garnett_import_test_data.R -c $CDS -m $marker_file
-echo "CDS imported"
 
 # Make raw test data from provided CDS object 
-export expr_mat=$output_dir'/expression_matrix.txt'
+export expr_mat=$output_dir'/expression_matrix.mtx'
 export pheno_data=$output_dir'/pheno_data.txt'
 export feature_data=$output_dir'/feature_data.txt'
 
 # Parse raw data back into CDS object 
-export CDS_rebuilt=$output_dir'/cds_rebuilt.rds'
+#export CDS_rebuilt=$output_dir'/cds_rebuilt.rds'
 
 # Check marker file 
 export DB='org.Hs.eg.db'
