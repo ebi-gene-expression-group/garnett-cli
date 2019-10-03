@@ -2,7 +2,7 @@
 
 
 # package management
-suppressPackageStartupMessages(require(pacman))
+#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -67,13 +67,14 @@ if(! file.exists(opt$classifier_object)){
 }
 
 # pacman downloads the package if it hasn't been downloaded before 
-tryCatch({
-    p_load(opt$database, character.only = TRUE)},
-    warning = function(w){
-        stop((paste('Database',
-                     opt$database, 'was not found on Bioconductor')))}
-)
+# tryCatch({
+#     p_load(opt$database, character.only = TRUE)},
+#     warning = function(w){
+#         stop((paste('Database',
+#                      opt$database, 'was not found on Bioconductor')))}
+# )
 
+suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
 

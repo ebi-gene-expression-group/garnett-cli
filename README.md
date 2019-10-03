@@ -1,14 +1,13 @@
 # garnett-cli
-Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. 
+Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. You can build cell type classification model using single-cell RNA-seq data and expressed marker genes. Alternatively, you can use pre-trained classifiers to determine cell types in your data.    
 Graphical representation of the general workflow:
-
 
 ![](https://github.com/ebi-gene-expression-group/garnett-cli/blob/master/garnett_pipeline.png)
 
 ## Commands 
 Currently available Garnett functions are listed in the following section. Each script has usage instructions available via --help, consult function documentation in Garnett for more dertail. 
 
-### Import test data 
+### import_test_data(): Import data for testing the tool
 In order to test the tool, you will need to extract the CellDataSet (CDS) object holding example expression data in .rds format and the marker text file which are used as initial input to for the workflow. This is done via the following command:
 
 ``` 
@@ -16,7 +15,7 @@ garnett_import_test_data.R --cds-object <output path to CDS object in .rds forma
                            --marker-file <putput path to marker file in .txt format>
 ```
 
-### Build CDS object input from raw expression matrix
+### parse_expr_data(): Build CDS object input from raw expression matrix
 If you are using raw experiment data, you can build a CDS object using the following script:
 
 ```
@@ -26,9 +25,9 @@ parse_expr_data.R --expression-matrix <numeric matrix with expression values in 
                   --output-file <path to output file in .rds format> 
 ```
 
-Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of file structure.
+Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of the file structure.
 
-### Check marker file 
+### check_markers(): Check marker file 
 In order to verify that markers provide an accurate representation of corresponding cell types, run the following script:
 
 ```
@@ -40,9 +39,11 @@ garnett_check_markers.R --cds-object <path to CDS object in .rds format>\
                         --marker-output-path <Output path for marker analysis file in .txt format>\
                         --plot-output-path <output path for the plot in .png format>
 ```
+_NB_: before specifying the database, make sure you have it installed as package in your environment. For example, you can use [conda](https://anaconda.org/bioconda/bioconductor-org.hs.eg.db) or [bioconductor](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html) to install org.Hs.eg.db.
+ 
 If the flag ` --plot-output-path` is used, graphical representation of marker quality will be produced automatically. 
 
-### Train the classifier 
+### train_classifier(): Train the classifier 
 Although a range of [pre-trained classifiers](https://cole-trapnell-lab.github.io/garnett/classifiers/) are available for usage, you can train your own via the following command: 
 
 ```
@@ -52,7 +53,7 @@ garnett_train_classifier.R --cds-object <path to CDS object in .rds format>\
                            --output-path <output path for the trained classifier in .rds format>
 ```
 
-### Get genes used as features in the classification model
+### get_feature_genes(): Get genes used as features in the classification model
 In some cases, it might be of interest to investigate which genes are deemed important by the classification model and thus used as features for classification.
 
 ```
@@ -62,7 +63,7 @@ garnett_get_feature_genes.R --classifier-object <path to a classifier object
                              --output-path <path to output file in .txt format>
 ```
 
-### Classify cells 
+### classify_cells(): Classify cell types 
 ```
 garnett_classify_cells.R --cds-object <path to CDS object in .rds format>
                          --classifier-object <path to a classifier object 
@@ -71,7 +72,7 @@ garnett_classify_cells.R --cds-object <path to CDS object in .rds format>
 ```
 Classification column will be added to the CDS object's metadata as an additional column. **Note**: to repeat classification on the same CDS object you will need first to delete the column with previous classification result. 
 
-### Decompose CDS object into raw data
+### make_test_data(): Decompose CDS object into raw data
 In case you would like to extract raw data from the CDS object, run: 
 ```
 make_test_data.R --input-file <path to input CDS object in .rds format>\
