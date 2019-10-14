@@ -11,6 +11,9 @@ output_dir=$test_dir'/outputs'
 mkdir -p $test_dir
 mkdir -p $output_dir
 
+# update path variable
+export PATH=`pwd`:$PATH
+
 function usage {
     echo "usage: garnett_cli_post_install_tests.sh [action] [use_existing_outputs]"
     echo "  - action: what action to take, 'test' or 'clean'"
@@ -78,6 +81,7 @@ export tsne_plot_ext=$output_dir'/tsne_plot_ext.png'
 # Workflow parameters 
 export gene_id_type='SYMBOL'
 export marker_gene_type='SYMBOL'
+export classifier_gene_type='ENSEMBL'
 export n_outgroups=50
 export node='root'
 export convert_ids=true
@@ -91,3 +95,4 @@ export use_existing_outputs
 tests_file="${script_name%.*}".bats
 # Execute the tests
 $tests_file
+

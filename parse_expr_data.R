@@ -69,7 +69,7 @@ suppressPackageStartupMessages(require(garnett))
 
 # initialise the CDS object 
 expr_matrix = Matrix::readMM(opt$expression_matrix)
-pData = read.table(opt$phenotype_data)
+pData = read.table(opt$phenotype_data, sep="\t")
 fData = read.table(opt$feature_data)
 row.names(expr_matrix) = row.names(fData)
 colnames(expr_matrix) = row.names(pData)

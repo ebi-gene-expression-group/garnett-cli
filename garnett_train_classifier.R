@@ -161,16 +161,16 @@ if(! is.null(opt$lambdas)){
 }
 print(opt$marker_file_path)
 pbmc_classifier = train_cell_classifier(cds = pbmc_cds,
-                                         marker_file = opt$marker_file_path,
-                                         db=opt$database,
-                                         cds_gene_id_type = opt$cds_gene_id_type,
-                                         num_unknown = opt$num_unknown,
-                                         marker_file_gene_id_type = opt$marker_file_gene_id_type,
-                                         min_observations = opt$min_observations,
-                                         max_training_samples = opt$max_training_samples,
-                                         propogate_markers = opt$propogate_markers,
-                                         cores = opt$cores, 
-                                         lambdas = lambdas,
-                                         classifier_gene_id_type = opt$classifier_gene_id_type)
+                                        marker_file = opt$marker_file_path,
+                                        db=opt$database,
+                                        cds_gene_id_type = opt$cds_gene_id_type,
+                                        num_unknown = opt$num_unknown,
+                                        marker_file_gene_id_type = opt$marker_file_gene_id_type,
+                                        min_observations = opt$min_observations,
+                                        max_training_samples = opt$max_training_samples,
+                                        propogate_markers = opt$propogate_markers,
+                                        cores = opt$cores, 
+                                        lambdas = lambdas,
+                                        classifier_gene_id_type = opt$classifier_gene_id_type)
 
 saveRDS(pbmc_classifier, file = opt$output_path)
