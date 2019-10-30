@@ -66,7 +66,6 @@ if(! file.exists(opt$feature_data)){
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
 
-
 # initialise the CDS object 
 expr_matrix = Matrix::readMM(opt$expression_matrix)
 pData = read.table(opt$phenotype_data, sep="\t")
@@ -74,8 +73,5 @@ fData = read.table(opt$feature_data)
 row.names(expr_matrix) = row.names(fData)
 colnames(expr_matrix) = row.names(pData)
 
-pd = new("AnnotatedDataFrame", data = pData)
-fd = new("AnnotatedDataFrame", data = fData)
-cds = newCellDataSet(as(expr_matrix, "dgCMatrix"), phenoData = pd, featureData = fd)
-cds = estimateSizeFactors(cds)
+cds = new_cell_data_set(as(expr_matrix, "dgCMatrix"), cell_metadata = pData, gene_metadata = fData)
 saveRDS(cds, file = opt$output_file)

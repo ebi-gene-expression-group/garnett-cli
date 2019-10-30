@@ -1,8 +1,5 @@
 #!/usr/bin/env Rscript
 
-
-# package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -99,13 +96,6 @@ if(! file.exists(opt$classifier_object)){
     stop(paste("File", opt$classifier_object, "does not exist."))
 }
 
-# tryCatch({
-#     p_load(opt$database, character.only = TRUE)},
-#     warning = function(w){
-#         stop((paste('Database', opt$database,
-#                     'was not found on Bioconductor')))}
-# )
-
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
@@ -113,32 +103,30 @@ opt$database = get(opt$database)
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
 
-pbmc_cds = readRDS(opt$cds_object)
-pbmc_classifier = readRDS(opt$classifier_object)
+cds = readRDS(opt$cds_object)
+classifier = readRDS(opt$classifier_object)
 
 # run the function 
-pbmc_cds = classify_cells(pbmc_cds, pbmc_classifier,
+cds = classify_cells(cds, classifier,
                           db = opt$database, 
                           cluster_extend = opt$cluster_extend, 
                           cds_gene_id_type = opt$cds_gene_id_type)  
 
-saveRDS(pbmc_cds, file = opt$cds_object)
+saveRDS(cds, file = opt$cds_object)
 
 # if plot output is provided, do plotting step 
-print(opt$plot_output_path)
 if(! is.na(opt$plot_output_path)){
     suppressPackageStartupMessages(require(ggplot2))
     png(file = opt$plot_output_path)
     print(qplot(tsne_1, tsne_2, color = cell_type,
-                data = pData(pbmc_cds)) + theme_bw())
+                data = as.data.frame(pData(cds))) + theme_bw())
     dev.off()
     if(opt$cluster_extend){
         path = paste(strsplit(opt$plot_output_path,
                               '.png')[[1]][1], "_ext.png", sep='')
-        print(path) 
         png(file = path)
         print(qplot(tsne_1, tsne_2, color = cluster_ext_type, 
-                    data = pData(pbmc_cds)) + theme_bw())
+                    data = as.data.frame(pData(cds))) + theme_bw())
         dev.off()
     }
 }
