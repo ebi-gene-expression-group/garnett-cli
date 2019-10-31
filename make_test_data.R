@@ -6,16 +6,13 @@ suppressPackageStartupMessages(require(optparse))
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # create input to check the parse_expr_data.R script works correctly 
-# input:
-#   - cds object: object to decompose into parts
-
 option_list = list(
     make_option(
-        c("-i", "--input-file"), 
+        c("-m", "--marker-file"),
         action = 'store',
         default = NA,
         type = 'character',
-        help = 'Path to CDS object' 
+        help = 'Path for marker file' 
     ),
     make_option(
         c("-e", "--expr-matrix"),
@@ -39,19 +36,29 @@ option_list = list(
         help = 'Output path for feature data' 
     )
 )
-opt = wsc_parse_args(option_list, mandatory=c("input_file", "expr_matrix",
-                                              "pheno_data", "feature_data"))
+opt = wsc_parse_args(option_list, mandatory=c("marker_file",
+                                              "expr_matrix",
+                                              "pheno_data",
+                                              "feature_data"))
+
 
 suppressPackageStartupMessages(require(garnett))
 
-cds = readRDS(opt$input_file)
-matrix = exprs(cds)
-writeMM(matrix, file = opt$expr_matrix)
+# obtain marker file and write it to specified location  
+path = paste(find.package("garnett"), "/extdata/pbmc_test.txt", sep='')
+if(file.exists(path)){
+  invisible(file.copy(path, opt$marker_file))  
+} else{
+    stop("Warning: cannot extract test data: marker file does not exist.")
+}
 
-pData = data.frame(cds@phenoData@data)
-write.table(pData, file = opt$pheno_data, sep="\t", row.names = TRUE,
-            col.names = TRUE)
+# extract test data from package  
+matrix = Matrix::readMM(system.file("extdata", "exprs_sparse.mtx", package = "garnett"))
+fData = read.table(system.file("extdata", "fdata.txt", package = "garnett"))
+pData = read.table(system.file("extdata", "pdata.txt", package = "garnett"),
+                   sep="\t")
 
-fData = data.frame(cds@featureData@data)
-write.table(fData, file = opt$feature_data, sep="\t", row.names = TRUE,
-            col.names = TRUE)
+# write data to check raw data parsing script 
+Matrix::writeMM(matrix, file = opt$expr_matrix)
+write.table(pData, file = opt$pheno_data, row.names = TRUE, sep="\t")
+write.table(fData, file = opt$feature_data, row.names = TRUE,  sep="\t")

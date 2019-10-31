@@ -1,13 +1,9 @@
 #!/usr/bin/env Rscript
 
-
-# package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
-
 
 # Obtain a list of genes used as features in classification model
 
@@ -66,14 +62,6 @@ if(! file.exists(opt$classifier_object)){
     stop((paste('File ', opt$classifier_object, 'does not exist')))
 }
 
-# pacman downloads the package if it hasn't been downloaded before 
-# tryCatch({
-#     p_load(opt$database, character.only = TRUE)},
-#     warning = function(w){
-#         stop((paste('Database',
-#                      opt$database, 'was not found on Bioconductor')))}
-# )
-
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
@@ -82,13 +70,12 @@ opt$database = get(opt$database)
 suppressPackageStartupMessages(require(garnett))
 
 # read the classifier object 
-pbmc_classifier = readRDS(opt$classifier_object)
+classifier = readRDS(opt$classifier_object)
 
-# run the function 
-print(opt$convert_ids)
-feature_genes = get_feature_genes(pbmc_classifier, node = opt$node,
+feature_genes = get_feature_genes(classifier, node = opt$node,
                                   db = opt$database,
                                   convert_ids = opt$convert_ids)
+head(feature_genes)
 
 write.table(feature_genes, opt$output_path, sep = "\t") 
 print(paste("Output file is written to ", opt$output_path))

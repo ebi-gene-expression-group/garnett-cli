@@ -7,14 +7,6 @@ Graphical representation of the general workflow:
 ## Commands 
 Currently available Garnett functions are listed in the following section. Each script has usage instructions available via --help, consult function documentation in Garnett for more dertail. 
 
-### import_test_data(): Import data for testing the tool
-In order to test the tool, you will need to extract the CellDataSet (CDS) object holding example expression data in .rds format and the marker text file which are used as initial input to for the workflow. This is done via the following command:
-
-``` 
-garnett_import_test_data.R --cds-object <output path to CDS object in .rds format>\
-                           --marker-file <putput path to marker file in .txt format>
-```
-
 ### parse_expr_data(): Build CDS object input from raw expression matrix
 If you are using raw experiment data, you can build a CDS object using the following script:
 
@@ -27,7 +19,7 @@ parse_expr_data.R --expression-matrix <numeric matrix with expression values in 
 
 Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of the file structure.
 
-### check_markers(): Check marker file 
+### garnett_check_markers(): Check marker file 
 In order to verify that markers provide an accurate representation of corresponding cell types, run the following script:
 
 ```
@@ -43,7 +35,7 @@ _NB_: before specifying the database, make sure you have it installed as package
  
 If the flag ` --plot-output-path` is used, graphical representation of marker quality will be produced automatically. 
 
-### train_classifier(): Train the classifier 
+### garnett_train_classifier(): Train the classifier 
 Although a range of [pre-trained classifiers](https://cole-trapnell-lab.github.io/garnett/classifiers/) are available for usage, you can train your own via the following command: 
 
 ```
@@ -53,7 +45,7 @@ garnett_train_classifier.R --cds-object <path to CDS object in .rds format>\
                            --output-path <output path for the trained classifier in .rds format>
 ```
 
-### get_feature_genes(): Get genes used as features in the classification model
+### garnett_get_feature_genes(): Get genes used as features in the classification model
 In some cases, it might be of interest to investigate which genes are deemed important by the classification model and thus used as features for classification.
 
 ```
@@ -63,7 +55,7 @@ garnett_get_feature_genes.R --classifier-object <path to a classifier object
                              --output-path <path to output file in .txt format>
 ```
 
-### classify_cells(): Classify cell types 
+### garnett_classify_cells(): Classify cell types 
 ```
 garnett_classify_cells.R --cds-object <path to CDS object in .rds format>
                          --classifier-object <path to a classifier object 
@@ -72,15 +64,14 @@ garnett_classify_cells.R --cds-object <path to CDS object in .rds format>
 ```
 Classification column will be added to the CDS object's metadata as an additional column. **Note**: to repeat classification on the same CDS object you will need first to delete the column with previous classification result. 
 
-### make_test_data(): Decompose CDS object into raw data
-In case you would like to extract raw data from the CDS object, run: 
+### make_test_data(): Obtain test data
+In case you would like to extract raw data for the test CDS object and example marker file, run: 
 ```
-make_test_data.R --input-file <path to input CDS object in .rds format>\
+make_test_data.R --marker-file <output path for marker file in .txt format>\
                  --expr-matrix <output path for extracted expression matrix in .txt format>\
                  --pheno-data <output path for phenotype data in .txt format>
                  --feature-data <output path for gene features in .txt format>
 ```
-
 
 
 

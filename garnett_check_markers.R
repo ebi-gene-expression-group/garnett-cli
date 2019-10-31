@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 
-# package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -74,8 +72,8 @@ option_list = list(
         default = TRUE,
         type = 'logical',
         help = "Optional. Should markers from child nodes of a cell type be used
-        in finding representatives of the parent type?
-        Default: TRUE."
+                in finding representatives of the parent type?
+                Default: TRUE."
     ),
     make_option(
         c("--use-tf-idf"),
@@ -83,9 +81,9 @@ option_list = list(
         default = TRUE,
         type = 'logical',
         help = "Optional. Should TF-IDF matrix be calculated during estimation?
-        If TRUE, estimates will be more accurate, but calculation is slower
-        with very large datasets.
-        Default: TRUE."
+                If TRUE, estimates will be more accurate, but calculation is slower
+                with very large datasets.
+                Default: TRUE."
     ),
     make_option(
         c("--classifier-gene-id-type"),
@@ -93,8 +91,8 @@ option_list = list(
         default = "ENSEMBL",
         type = 'character',
         help = "Optional. The type of gene ID that will be used in the
-        classifier. If possible for your organism, this should be 'ENSEMBL',
-        which is the default. Ignored if db = 'none'."
+                classifier. If possible for your organism, this should be 'ENSEMBL',
+                which is the default. Ignored if db = 'none'."
     ),
     make_option(
         c("--amb-marker-cutoff"),
@@ -126,13 +124,6 @@ if(! file.exists(opt$marker_file_path)){
     stop((paste('File ', opt$marker_file_path, 'does not exist')))
 }
 
-# load the database. pacman downloads the package if it's not installed 
-# tryCatch({
-#     p_load(opt$database, character.only = TRUE)},
-#     warning = function(w){
-#     stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
-# )
-
 suppressPackageStartupMessages(require(opt$database, character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
@@ -141,10 +132,11 @@ opt$database = get(opt$database)
 suppressPackageStartupMessages(require(garnett))
 
 # read the CDS object
-pbmc_cds = readRDS(opt$cds_object)
+cds = readRDS(opt$cds_object)
 
 # run the core function 
-marker_check = check_markers(pbmc_cds, opt$marker_file_path,
+marker_check = check_markers(cds = cds, 
+                             opt$marker_file_path,
                              db = opt$database, 
                              cds_gene_id_type = opt$cds_gene_id_type,
                              marker_file_gene_id_type = opt$marker_file_gene_id_type, 
@@ -160,5 +152,4 @@ if(! is.na(opt$plot_output_path)){
     dev.off()
 }
 
-print(marker_check)
 write.table(marker_check, file = opt$marker_output_path, sep = "\t")
