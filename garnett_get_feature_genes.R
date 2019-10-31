@@ -1,13 +1,9 @@
 #!/usr/bin/env Rscript
 
-
-# package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
-
 
 # Obtain a list of genes used as features in classification model
 
@@ -74,9 +70,9 @@ opt$database = get(opt$database)
 suppressPackageStartupMessages(require(garnett))
 
 # read the classifier object 
-pbmc_classifier = readRDS(opt$classifier_object)
+classifier = readRDS(opt$classifier_object)
 
-feature_genes = get_feature_genes(pbmc_classifier, node = opt$node,
+feature_genes = get_feature_genes(classifier, node = opt$node,
                                   db = opt$database,
                                   convert_ids = opt$convert_ids)
 head(feature_genes)

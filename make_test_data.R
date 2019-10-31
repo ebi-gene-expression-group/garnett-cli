@@ -41,8 +41,7 @@ opt = wsc_parse_args(option_list, mandatory=c("marker_file",
                                               "pheno_data",
                                               "feature_data"))
 
-# load packages 
-suppressPackageStartupMessages(require(monocle))
+
 suppressPackageStartupMessages(require(garnett))
 
 # obtain marker file and write it to specified location  
@@ -58,10 +57,8 @@ matrix = Matrix::readMM(system.file("extdata", "exprs_sparse.mtx", package = "ga
 fData = read.table(system.file("extdata", "fdata.txt", package = "garnett"))
 pData = read.table(system.file("extdata", "pdata.txt", package = "garnett"),
                    sep="\t")
-#row.names(matrix) = row.names(fData)
-#colnames(matrix) = row.names(pData)
 
 # write data to check raw data parsing script 
-writeMM(matrix, file = opt$expr_matrix)
+Matrix::writeMM(matrix, file = opt$expr_matrix)
 write.table(pData, file = opt$pheno_data, row.names = TRUE, sep="\t")
 write.table(fData, file = opt$feature_data, row.names = TRUE,  sep="\t")
