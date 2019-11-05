@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
 
-# package management
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -8,7 +7,7 @@ suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Train the classification model using the updated marker file and CDS object
 
-# get the number of cores 
+# get the number of cores for parallel execution 
 suppressPackageStartupMessages(require(parallel))
 n_cores = detectCores()
 
@@ -135,13 +134,6 @@ if(! file.exists(opt$marker_file_path)){
     stop((paste('File ', opt$marker_file_path, 'does not exist')))
 }
 
-# load the database. pacman downloads the package if it hasn't been downloaded before 
-# tryCatch({
-#     p_load(opt$database, character.only = TRUE)},
-#     warning = function(w){
-#     stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
-# )
-
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
@@ -150,7 +142,7 @@ opt$database = get(opt$database)
 suppressPackageStartupMessages(require(garnett))
 
 # read the CDS object
-pbmc_cds = readRDS(opt$cds_object)
+cds = readRDS(opt$cds_object)
 
 # run the main function 
 set.seed(123)
@@ -160,17 +152,17 @@ if(! is.null(opt$lambdas)){
     lambdas = opt$lambdas
 }
 print(opt$marker_file_path)
-pbmc_classifier = train_cell_classifier(cds = pbmc_cds,
-                                        marker_file = opt$marker_file_path,
-                                        db=opt$database,
-                                        cds_gene_id_type = opt$cds_gene_id_type,
-                                        num_unknown = opt$num_unknown,
-                                        marker_file_gene_id_type = opt$marker_file_gene_id_type,
-                                        min_observations = opt$min_observations,
-                                        max_training_samples = opt$max_training_samples,
-                                        propogate_markers = opt$propogate_markers,
-                                        cores = opt$cores, 
-                                        lambdas = lambdas,
-                                        classifier_gene_id_type = opt$classifier_gene_id_type)
+classifier = train_cell_classifier(cds = cds,
+                                   marker_file = opt$marker_file_path,
+                                   db=opt$database,
+                                   cds_gene_id_type = opt$cds_gene_id_type,
+                                   num_unknown = opt$num_unknown,
+                                   marker_file_gene_id_type = opt$marker_file_gene_id_type,
+                                   min_observations = opt$min_observations,
+                                   max_training_samples = opt$max_training_samples,
+                                   propogate_markers = opt$propogate_markers,
+                                   cores = opt$cores, 
+                                   lambdas = lambdas,
+                                   classifier_gene_id_type = opt$classifier_gene_id_type)
 
-saveRDS(pbmc_classifier, file = opt$output_path)
+saveRDS(classifier, file = opt$output_path)

@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 
-# package management
-#suppressPackageStartupMessages(require(pacman))
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
 # Load common functions
@@ -126,13 +124,6 @@ if(! file.exists(opt$marker_file_path)){
     stop((paste('File ', opt$marker_file_path, 'does not exist')))
 }
 
-# load the database. pacman downloads the package if it's not installed 
-# tryCatch({
-#     p_load(opt$database, character.only = TRUE)},
-#     warning = function(w){
-#     stop((paste('Database', opt$database, 'was not found on Bioconductor')))}
-# )
-
 suppressPackageStartupMessages(require(opt$database, character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
@@ -141,10 +132,11 @@ opt$database = get(opt$database)
 suppressPackageStartupMessages(require(garnett))
 
 # read the CDS object
-pbmc_cds = readRDS(opt$cds_object)
+cds = readRDS(opt$cds_object)
 
 # run the core function 
-marker_check = check_markers(pbmc_cds, opt$marker_file_path,
+marker_check = check_markers(cds = cds, 
+                             opt$marker_file_path,
                              db = opt$database, 
                              cds_gene_id_type = opt$cds_gene_id_type,
                              marker_file_gene_id_type = opt$marker_file_gene_id_type, 
@@ -160,5 +152,4 @@ if(! is.na(opt$plot_output_path)){
     dev.off()
 }
 
-print(marker_check)
 write.table(marker_check, file = opt$marker_output_path, sep = "\t")
