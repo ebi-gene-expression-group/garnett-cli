@@ -12,7 +12,7 @@ mkdir -p $test_dir
 mkdir -p $output_dir
 
 # update path variable
-# export PATH=`pwd`:$PATH
+export PATH=`pwd`:$PATH
 
 function usage {
     echo "usage: garnett_cli_post_install_tests.sh [action] [use_existing_outputs]"
@@ -36,7 +36,6 @@ if [ "$use_existing_outputs" != 'true' ] &&\
 fi
 
 # Clean up if specified
-
 if [ "$action" = 'clean' ]; then
     echo "Cleaning up $output_dir ..."
     rm -rf $output_dir
@@ -47,18 +46,17 @@ fi
 ################################################################################
 # List tool outputs/ inputs
 ################################################################################
-
-# Main inputs for the workflow
-export ref_CDS=$test_dir'/cds.rds' 
-export query_CDS=$test_dir'/cds.rds' # use the same file for training and testing
 export marker_file=$test_dir'/test_marker_file.txt'
 
-# Make raw test data from provided CDS object 
-export expr_mat=$output_dir'/matrix.mtx'
-export pheno_data=$output_dir'/barcodes.tsv'
-export feature_data=$output_dir'/genes.tsv'
-export test_10x_dir=$output_dir'/test_10x_dir'
+# Build directories with expression data 
+export expr_mat='matrix.mtx'
+export pheno_data='barcodes.tsv'
+export feature_data='genes.tsv'
+export test_10x_dir=$test_dir'/test_10x_dir'
 
+# reference and query CDS objects 
+export ref_CDS=$output_dir'/cds.rds' 
+export query_CDS=$output_dir'/cds.rds' # use the same file for training and prediction
 
 # Check marker file 
 export DB='org.Hs.eg.db'

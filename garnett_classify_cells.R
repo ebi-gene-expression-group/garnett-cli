@@ -82,6 +82,7 @@ option_list = list(
         type = 'character',
         help = "Output path for cds object holding predicted labels on query data"
 
+    )
 )
 
 opt = wsc_parse_args(option_list, mandatory = c("cds_object",

@@ -3,7 +3,6 @@
 suppressPackageStartupMessages(require(optparse))
 suppressPackageStartupMessages(require(workflowscriptscommon))
 suppressPackageStartupMessages(require(garnett))
-suppressPackageStartupMessages(require(monocle3))
 
 # create input to check the parse_expr_data.R script works correctly 
 option_list = list(
@@ -34,7 +33,7 @@ option_list = list(
         default = 'genes.tsv',
         type = 'character',
         help = 'Output path for feature data' 
-    )
+    ),
     make_option(
         c("-o", "--output-dir"),
         action = 'store',
@@ -42,7 +41,6 @@ option_list = list(
         type = 'character',
         help = 'Output path for feature data' 
     )
-
 )
 
 opt = wsc_parse_args(option_list, mandatory=c("marker_file"))
@@ -60,7 +58,8 @@ fData = read.table(system.file("extdata", "fdata.txt", package = "garnett"))
 pData = read.table(system.file("extdata", "pdata.txt", package = "garnett"), sep="\t")
 
 dir = opt$output_dir
-if(!endsWith(dir, "/")) dir = paste(dir, "/")
+if(!endsWith(dir, "/")) dir = paste(dir, "/", sep="")
+dir.create(dir)
 
 # write files into 10x directory 
 Matrix::writeMM(matrix, file = paste0(dir, opt$expr_matrix, sep=""))
