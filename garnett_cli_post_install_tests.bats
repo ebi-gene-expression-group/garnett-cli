@@ -8,7 +8,8 @@
         && make_test_data.R --marker-file $marker_file\
                               --expr-matrix $expr_mat\
                               --pheno-data $pheno_data\
-                              --feature-data $feature_data
+                              --feature-data $feature_data\
+                              --output-dir $test_10x_dir
     echo "status = ${status}"
     echo "output = ${output}"    
     [ "$status" -eq 0 ]
@@ -16,20 +17,22 @@
     [ -f "$expr_mat" ]
     [ -f "$pheno_data" ]
     [ -f "$feature_data" ]
+    [ -f "$test_10x_dir" ]
 }
 
-@test "Parse raw data into CDS object " {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$CDS" ]; then
-        skip "$CDS_rebuilt exists and use_existing_outputs is set to 'true'"
+@test "Parse reference and query data into CDS objects " {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$ref_CDS" ]; then
+        skip "$ref_CDS exists and use_existing_outputs is set to 'true'"
     fi
-    run rm -f $CDS && parse_expr_data.R -e $expr_mat\
-                                          -p $pheno_data\
-                                          -f $feature_data\
-                                          -o $CDS
+    run rm -f $ref_CDS && parse_expr_data.R --ref-10x-dir $test_10x_dir\
+                                            --query-10x-dir $test_10x_dir\
+                                            --ref-output-cds $ref_CDS\
+                                            --query-output-cds $query_CDS
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
-    [ -f $CDS ]
+    [ -f $ref_CDS ]
+    [ -f $query_CDS ]
 }
 
 @test "Check marker file" {
@@ -39,7 +42,7 @@
               is set to 'true'"
     fi
     run rm -f $checked_markers $marker_plot &&\
-              garnett_check_markers.R -c $CDS -m $marker_file\
+              garnett_check_markers.R -c $ref_CDS -m $marker_file\
                                            --cds-gene-id-type $gene_id_type\
                                            -d $DB -o $checked_markers\
                                            --plot-output-path $marker_plot
@@ -58,7 +61,7 @@
               is set to 'true'"
     fi
     run rm -f $trained_classifier &&\
-     garnett_train_classifier.R  -c $CDS\
+    garnett_train_classifier.R  -c $ref_CDS\
                                    -m $marker_file\
                                    --cds-gene-id-type $gene_id_type\
                                    --marker-file-gene-id-type $marker_gene_type\
@@ -90,13 +93,16 @@
         skip "$tsne_plot exists and use_existing_outputs is set to 'true'"
     fi
 
-    run rm -f $tsne_plot $tsne_plot_ext && garnett_classify_cells.R\
-                                           -i $CDS_copy -c $trained_classifier\
+    run rm -f $tsne_plot $tsne_plot_ext $cds_output_obj && garnett_classify_cells.R\
+                                           --cds-object $query_CDS\
+                                           --classifier-object $trained_classifier\
                                            -d $DB --cds-gene-id-type $gene_id_type\
-                                           --cluster-extend -p $tsne_plot
+                                           --cluster-extend -p $tsne_plot\
+                                           --cds-output-obj $cds_output_obj
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
     [ -f $tsne_plot ]
     [ -f $tsne_plot_ext ]
+    [ -f $cds_output_obj ]
 }

@@ -1,8 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
-# Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Using information from CDS object, determine which markers are suitable 
@@ -127,10 +125,8 @@ if(! file.exists(opt$marker_file_path)){
 suppressPackageStartupMessages(require(opt$database, character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
-
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
-
 # read the CDS object
 cds = readRDS(opt$cds_object)
 
@@ -145,7 +141,7 @@ marker_check = check_markers(cds = cds,
                              classifier_gene_id_type = opt$classifier_gene_id_type)
 
 if(! is.na(opt$plot_output_path)){
-    print(paste("plotting path", opt$plot_output_path))
+    print(paste("plotting path ", opt$plot_output_path))
     png(filename = opt$plot_output_path)
     print(plot_markers(marker_check, amb_marker_cutoff = opt$amb_marker_cutoff,
                        label_size = opt$label_size))

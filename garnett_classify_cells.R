@@ -1,8 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
-# Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Classify cells into cell types using a pre-trained classifier or one obtained
@@ -15,18 +13,14 @@ option_list = list(
         action = "store",
         default = NA,
         type = 'character',
-        help = "CDS object holding expression data. After classification is
-                obtained, the column with classes is added to the pData of gene
-                expression table. NB: running the script again on the same CDS
-                will cause an error. Delete the classification column to 
-                repeat classificaion."
+        help = "Query CDS object holding expression data to be classified"
     ),
     make_option(
         c("-c", "--classifier-object"),
         action = "store",
         default = NA,
         type = 'character',
-        help = "path to the object of class garnett_classifier, which is either
+        help = "Path to the object of class garnett_classifier, which is either
                 trained via garnett_train_classifier.R or obtained previously"
     ),
     make_option(
@@ -34,7 +28,7 @@ option_list = list(
         action = "store",
         default = NA,
         type = 'character',
-        help = "argument for Bioconductor AnnotationDb-class package used for
+        help = "Argument for Bioconductor AnnotationDb-class package used for
                 converting gene IDs. For example, use org.Hs.eg.db for
                 Homo Sapiens genes."
     ),
@@ -80,29 +74,32 @@ option_list = list(
         help = "output path for the t-SNE plots. In case --cluster-extend
                 tag is provided, two plots will be made. If no path is provided,
                 plots will not be produced."
-    )
+    ),
+    make_option(
+        c("-o", "--cds-output-obj"),
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = "Output path for cds object holding predicted labels on query data"
+
 )
 
 opt = wsc_parse_args(option_list, mandatory = c("cds_object",
                                                 "classifier_object",
-                                                "database"))
+                                                "database", 
+                                                "cds_output_obj"))
 
 # check input is correct
-if(! file.exists(opt$cds_object)){
-    stop(paste("File ", opt$cds_object, "does not exist."))
+inputs = c(opt$cds_object, opt$classifier_object)
+for(obj in inputs){
+    if(! file.exists(obj)) stop(paste("File ", obj, "does not exist."))
 }
-
-if(! file.exists(opt$classifier_object)){
-    stop(paste("File", opt$classifier_object, "does not exist."))
-}
-
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
 
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
-
 cds = readRDS(opt$cds_object)
 classifier = readRDS(opt$classifier_object)
 
@@ -112,9 +109,9 @@ cds = classify_cells(cds, classifier,
                           cluster_extend = opt$cluster_extend, 
                           cds_gene_id_type = opt$cds_gene_id_type)  
 
-saveRDS(cds, file = opt$cds_object)
+saveRDS(cds, file = opt$cds_output_obj)
 
-# if plot output is provided, do plotting step 
+# if plot output is provided, run plotting part 
 if(! is.na(opt$plot_output_path)){
     suppressPackageStartupMessages(require(ggplot2))
     png(file = opt$plot_output_path)
