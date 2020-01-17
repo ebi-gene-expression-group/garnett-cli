@@ -4,6 +4,26 @@ Graphical representation of the general workflow:
 
 ![](https://github.com/ebi-gene-expression-group/garnett-cli/blob/master/garnett_pipeline.png)
 
+## Installation 
+Garnett-cli is installed through Conda. [Miniconda](https://docs.conda.io/en/latest/miniconda.html) is a good way of getting set up with a basic Conda installation.
+
+It will help if you have your Conda set up to use channels as per Bioconda:
+```
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge 
+```
+
+We recommend you use a fresh environment to install the package: 
+```
+conda create --name <garnett-env>
+conda activate <garnett-env>
+conda install -c bioconda garnett-cli 
+```
+
+## Testing
+To test Garnett-cli installation, run ```garnett-cli-post-install-tests.sh 'test' 'false' ```
+
 ## Commands 
 Currently available Garnett functions are listed in the following section. Each script has usage instructions available via --help, consult function documentation in Garnett for more dertail. 
 

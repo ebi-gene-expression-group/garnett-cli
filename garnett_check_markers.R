@@ -117,23 +117,21 @@ opt = wsc_parse_args(option_list, mandatory = c('cds_object', 'marker_file_path'
 
 # check parameters are correctly defined 
 if(! file.exists(opt$cds_object)){
-    stop((paste('File ', opt$cds_object, 'does not exist')))
+    stop((paste('File', opt$cds_object, 'does not exist')))
 }
 
 if(! file.exists(opt$marker_file_path)){
-    stop((paste('File ', opt$marker_file_path, 'does not exist')))
+    stop((paste('File', opt$marker_file_path, 'does not exist')))
 }
 
 suppressPackageStartupMessages(require(opt$database, character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
-
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
 
 # read the CDS object
 cds = readRDS(opt$cds_object)
-
 # run the core function 
 marker_check = check_markers(cds = cds, 
                              opt$marker_file_path,
