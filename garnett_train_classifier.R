@@ -18,7 +18,7 @@ option_list = list(
         action = "store",
         default = NA,
         type = 'character',
-        help = "CDS object with expression data"
+        help = "CDS object with expression data for training"
     ),
     make_option(
         c("-m", "--marker-file-path"),
@@ -107,7 +107,7 @@ option_list = list(
     make_option(
         c("--classifier-gene-id-type"),
         action = "store",
-        default = "ENSEMBL", #TODO: change back to ensembl ? 
+        default = "ENSEMBL",
         type = 'character',
         help = "Optional. The type of gene ID that will be used in the classifier.
         If possible for your organism, this should be 'ENSEMBL', which is
@@ -127,31 +127,28 @@ opt = wsc_parse_args(option_list, mandatory=c("cds_object", "marker_file_path",
 
 # check parameters are correctly defined 
 if(! file.exists(opt$cds_object)){
-    stop((paste('File ', opt$cds_object, 'does not exist')))
+    stop((paste('File', opt$cds_object, 'does not exist')))
 }
 
 if(! file.exists(opt$marker_file_path)){
-    stop((paste('File ', opt$marker_file_path, 'does not exist')))
+    stop((paste('File', opt$marker_file_path, 'does not exist')))
 }
 
+# if input is OK, load main packages
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
-
-# if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
 
 # read the CDS object
 cds = readRDS(opt$cds_object)
-
-# run the main function 
 set.seed(123)
 if(! is.null(opt$lambdas)){
     lambdas = readRDS(opt$lambdas)
 } else{
     lambdas = opt$lambdas
 }
-print(opt$marker_file_path)
+
 classifier = train_cell_classifier(cds = cds,
                                    marker_file = opt$marker_file_path,
                                    db=opt$database,

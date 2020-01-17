@@ -36,7 +36,6 @@ if [ "$use_existing_outputs" != 'true' ] &&\
 fi
 
 # Clean up if specified
-
 if [ "$action" = 'clean' ]; then
     echo "Cleaning up $output_dir ..."
     rm -rf $output_dir
@@ -47,18 +46,17 @@ fi
 ################################################################################
 # List tool outputs/ inputs
 ################################################################################
-
-# Main inputs for the workflow
-export CDS=$test_dir'/test_cds.rds'
 export marker_file=$test_dir'/test_marker_file.txt'
 
-# Make raw test data from provided CDS object 
-export expr_mat=$output_dir'/expression_matrix.mtx'
-export pheno_data=$output_dir'/pheno_data.txt'
-export feature_data=$output_dir'/feature_data.txt'
+# Build directories with expression data 
+export expr_mat='matrix.mtx'
+export pheno_data='barcodes.tsv'
+export feature_data='genes.tsv'
+export test_10x_dir=$test_dir'/test_10x_dir'
 
-# Parse raw data back into CDS object 
-#export CDS_rebuilt=$output_dir'/cds_rebuilt.rds'
+# reference and query CDS objects 
+export ref_CDS=$output_dir'/cds.rds' 
+export query_CDS=$output_dir'/cds.rds' # use the same file for training and prediction
 
 # Check marker file 
 export DB='org.Hs.eg.db'
@@ -72,11 +70,9 @@ export trained_classifier=$output_dir'/trained_classifier.rds'
 export feature_genes=$output_dir'/feature_genes.txt'
 
 # Classify cells 
-# copy to allow classificaion several times
-export CDS_copy=$output_dir'/test_cds_copy.rds' 
-cp $CDS $CDS_copy 
 export tsne_plot=$output_dir'/tsne_plot.png'
 export tsne_plot_ext=$output_dir'/tsne_plot_ext.png'
+export cds_output_obj=$output_dir'/cds_pred_labs.rds'
 
 # Workflow parameters 
 export gene_id_type='SYMBOL'
@@ -93,6 +89,6 @@ export cluster_extend=true
 
 export use_existing_outputs
 tests_file="${script_name%.*}".bats
-# Execute the tests
+# Execute tests
 $tests_file
 
