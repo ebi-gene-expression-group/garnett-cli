@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 
+# Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
+# Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Obtain a list of genes used as features in classification model
@@ -57,14 +59,13 @@ opt = wsc_parse_args(option_list, mandatory=c("classifier_object", "database",
 
 # check input parameters 
 if(! file.exists(opt$classifier_object)){
-    stop((paste('File ', opt$classifier_object, 'does not exist')))
+    stop((paste('File', opt$classifier_object, 'does not exist')))
 }
 
+# if input is OK, load main packages
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
-
-# if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
 
 # read the classifier object 
@@ -75,4 +76,4 @@ feature_genes = get_feature_genes(classifier, node = opt$node,
 head(feature_genes)
 
 write.table(feature_genes, opt$output_path, sep = "\t") 
-print(paste("Output file is written to ", opt$output_path))
+print(paste("Output file is written to", opt$output_path))

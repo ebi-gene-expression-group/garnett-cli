@@ -1,8 +1,9 @@
 #!/usr/bin/env Rscript 
 
+# Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
+# Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
-suppressPackageStartupMessages(require(garnett))
 
 # create input to check the parse_expr_data.R script works correctly 
 option_list = list(
@@ -44,6 +45,7 @@ option_list = list(
 )
 
 opt = wsc_parse_args(option_list, mandatory=c("marker_file"))
+suppressPackageStartupMessages(require(garnett))
 # obtain marker file and write it to specified location  
 path = paste(find.package("garnett"), "/extdata/pbmc_test.txt", sep='')
 if(file.exists(path)){

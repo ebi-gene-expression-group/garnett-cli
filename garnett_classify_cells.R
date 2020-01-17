@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 
+# Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
+# Load common functions
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Classify cells into cell types using a pre-trained classifier or one obtained
@@ -90,17 +92,18 @@ opt = wsc_parse_args(option_list, mandatory = c("cds_object",
                                                 "database", 
                                                 "cds_output_obj"))
 
-# check input is correct
+# check inputs are correct
 inputs = c(opt$cds_object, opt$classifier_object)
 for(obj in inputs){
-    if(! file.exists(obj)) stop(paste("File ", obj, "does not exist."))
+    if(! file.exists(obj)) stop(paste("File", obj, "does not exist."))
 }
+
+# if input is OK, load main packages
 suppressPackageStartupMessages(require(opt$database,  character.only = TRUE))
 # convert string into variable 
 opt$database = get(opt$database)
-
-# if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
+
 cds = readRDS(opt$cds_object)
 classifier = readRDS(opt$classifier_object)
 
