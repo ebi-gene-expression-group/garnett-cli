@@ -1,5 +1,8 @@
 # garnett-cli
-Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. You can build cell type classification model using single-cell RNA-seq data and expressed marker genes. Alternatively, you can use pre-trained classifiers to determine cell types in your data.    
+Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. You can build cell type classification model using single-cell RNA-seq data and expressed marker genes. Alternatively, you can use pre-trained classifiers to determine cell types in your data.
+
+Note: Nextflow implementation of Garnett pipeline is also available [here](https://github.com/ebi-gene-expression-group/garnett-workflow/tree/master).    
+
 Graphical representation of the general workflow:
 
 ![](https://github.com/ebi-gene-expression-group/garnett-cli/blob/master/garnett_pipeline.png)
@@ -39,6 +42,15 @@ parse_expr_data.R --expression-matrix <numeric matrix with expression values in 
 
 Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of the file structure.
 
+### transform_marker_file(): Transform SCXA-style marker file into Garnett-compatible one
+Garnett has an author-defined marker file format. To work with marker files stored in SCXA ([example](ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/atlas/sc_experiments/E-ENAD-14/E-ENAD-14.marker_genes_18.tsv)), they need to be transformed in a specific way. Marker genes are filtered to leave only those with adjusted p-value below specified threshold.
+
+```
+transform_marker_file.R --input-marker-file <path to SCXA type marker file>\
+                        --marker-list <path to serialised object containing marker genes per cell type>\
+                        --garnett-marker-file <path to the output file in Garnett-compatible format>
+```
+
 ### garnett_check_markers(): Check marker file 
 In order to verify that markers provide an accurate representation of corresponding cell types, run the following script:
 
@@ -48,12 +60,21 @@ garnett_check_markers.R --cds-object <path to CDS object in .rds format>\
                         --database <name of gene database (e.g. org.Hs.eg.db for Homo Sapiens genes)>\
                         --cds-gene-id-type <Format of the gene IDs in your CDS object>\
                         --marker-file-gene-id-type <Format of the gene IDs in your marker file>\
-                        --marker-output-path <Output path for marker analysis file in .txt format>\
+                        --marker-output-path <output path for marker analysis file in .txt format>\
                         --plot-output-path <output path for the plot in .png format>
 ```
 _NB_: before specifying the database, make sure you have it installed as package in your environment. For example, you can use [conda](https://anaconda.org/bioconda/bioconductor-org.hs.eg.db) or [bioconductor](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html) to install org.Hs.eg.db.
  
 If the flag ` --plot-output-path` is used, graphical representation of marker quality will be produced automatically. 
+
+### update_marker_file(): Remove suboptimal markers
+After the marker checking step, to avoid manual inspection of the reults, this scrip removes markers deemed suboptimal by Garnett. 
+
+```
+update_marker_file.R --marker-list-obj <path to serialised object containing marker genes per cell type>\
+                     --marker-check-file <path to marker analysis file in .txt format>\
+                     --updated-marker-file <path to updated marker gene file in .txt format>
+```
 
 ### garnett_train_classifier(): Train the classifier 
 Although a range of [pre-trained classifiers](https://cole-trapnell-lab.github.io/garnett/classifiers/) are available for usage, you can train your own via the following command: 
