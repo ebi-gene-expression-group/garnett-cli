@@ -64,7 +64,7 @@ _NB_: before specifying the database, make sure you have it installed as package
  
 If the flag ` --plot-output-path` is used, graphical representation of marker quality will be produced automatically. 
 
-### update_marker_file(): Remove supoptimal markers
+### update_marker_file(): Remove suboptimal markers
 After the marker checking step, to avoid manual inspection of the reults, this scrip removes markers deemed suboptimal by Garnett. 
 
 ```
