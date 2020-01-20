@@ -65,9 +65,6 @@ for(idx in 1:length(cell_types)){
     cell_type = cell_types[idx]
     tmp = marker_check_tbl[marker_check_tbl[, cell_type_col] == cell_type, ]
     genes_to_remove = as.character(tmp[, gene_id])
-    print(typeof(genes_to_remove))
-    print(cell_type)
-    print(marker_list[[cell_type]])
     l = marker_list[[cell_type]]
     l = l[which(!l %in% genes_to_remove)]
     marker_list[[cell_type]] = l
