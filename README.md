@@ -1,5 +1,8 @@
 # garnett-cli
-Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. You can build cell type classification model using single-cell RNA-seq data and expressed marker genes. Alternatively, you can use pre-trained classifiers to determine cell types in your data.    
+Command line interface for the [Garnett](https://cole-trapnell-lab.github.io/garnett/) cell type classification tool. You can build cell type classification model using single-cell RNA-seq data and expressed marker genes. Alternatively, you can use pre-trained classifiers to determine cell types in your data.
+
+Note: Nextflow implementation of Garnett pipeline is also available [here](https://github.com/ebi-gene-expression-group/garnett-workflow/tree/master).    
+
 Graphical representation of the general workflow:
 
 ![](https://github.com/ebi-gene-expression-group/garnett-cli/blob/master/garnett_pipeline.png)
