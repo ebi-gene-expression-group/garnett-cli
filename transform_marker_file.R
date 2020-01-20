@@ -71,16 +71,16 @@ pval_cutoff = opt$pval_threshold
 groups_col = opt$groups_col
 names = opt$gene_names
 
-markers_tbl = read.delim(opt$input_marker_file)
+markers_tbl = read.delim(opt$input_marker_file, stringsAsFactors = FALSE)
 # filter siginficant genes
-markers_tbl = markers_tbl[markers_tbl[, pval_col] <= pval_cutoff, ]
-groups = as.character(unique(markers_tbl[, groups_col]))
+markers_tbl = markers_tbl[markers_tbl[, pval_col] <= pval_cutoff, , drop = FALSE]
+groups = unique(markers_tbl[, groups_col])
 markers_per_group = list()
 
 for(idx in 1:length(groups)){
     group = groups[idx]
     tmp = markers_tbl[markers_tbl[, groups_col] == group, ]
-    genes = as.character(tmp[, names])
+    genes = tmp[, names]
     markers_per_group[[idx]] = genes
 }
 names(markers_per_group) = groups

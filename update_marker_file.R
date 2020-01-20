@@ -53,18 +53,18 @@ option_list = list(
 
 opt = wsc_parse_args(option_list, mandatory = c("marker_list_obj", "marker_check_file", "updated_marker_file"))
 marker_list = readRDS(opt$marker_list_obj)
-marker_check_tbl = read.table(opt$marker_check_file, sep=" ")
+marker_check_tbl = read.table(opt$marker_check_file, sep=" ", stringsAsFactors = FALSE)
 summary_col = opt$summary_col
 cell_type_col = opt$cell_type_col
 gene_id = opt$gene_id_col
 
 # filter out 'bad' markers 
-marker_check_tbl = marker_check_tbl[marker_check_tbl[, summary_col] != "Ok", ]
-cell_types = as.character(unique(marker_check_tbl[, cell_type_col]))
+marker_check_tbl = marker_check_tbl[marker_check_tbl[, summary_col] != "Ok", , drop = FALSE]
+cell_types = unique(marker_check_tbl[, cell_type_col])
 for(idx in 1:length(cell_types)){
     cell_type = cell_types[idx]
-    tmp = marker_check_tbl[marker_check_tbl[, cell_type_col] == cell_type, ]
-    genes_to_remove = as.character(tmp[, gene_id])
+    tmp = marker_check_tbl[marker_check_tbl[, cell_type_col] == cell_type, , drop = FALSE]
+    genes_to_remove = tmp[, gene_id]
     l = marker_list[[cell_type]]
     l = l[which(!l %in% genes_to_remove)]
     marker_list[[cell_type]] = l
