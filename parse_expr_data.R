@@ -11,28 +11,14 @@ suppressPackageStartupMessages(require(workflowscriptscommon))
 # parse options 
 option_list = list(
     make_option(
-        c("-r", "--ref-10x-dir"),
+        c("-i", "--input-10x-dir"),
         action = "store",
         default = "reference_10x_dir",
         type = 'character',
         help = "10X-type directory with reference expression data"
     ),
     make_option(
-        c("-q", "--query-10x-dir"),
-        action = "store",
-        default = "query_10x_dir",
-        type = 'character',
-        help = "10X-type directory with query expression data"
-    ),
-    make_option(
-        c("-c", "--ref-output-cds"),
-        action = "store",
-        default = "ref_cds.rds",
-        type = 'character',
-        help = "output file path for reference CDS object in .rds format"
-    ),
-    make_option(
-        c("-d", "--query-output-cds"),
+        c("-o", "--output-cds"),
         action = "store",
         default = "query_cds.rds",
         type = 'character',
@@ -40,33 +26,32 @@ option_list = list(
     )
 )
 
-opt = wsc_parse_args(option_list)
-input_dirs = c(opt$ref_10x_dir, opt$query_10x_dir)
-cds_names = c(opt$ref_output_cds, opt$query_output_cds)
-# process input directories
-for(idx in 1:length(input_dirs)){
-    input_dir = input_dirs[idx] 
-    if(! file.exists(input_dir)) stop(paste('File', input_dir, 'does not exist'))
-    # standard 10X-type directory is expected to contain matrix.mtx, genes.tsv and barcodes.tsv files
-    if(!all(c("matrix.mtx", "barcodes.tsv", "genes.tsv") %in% list.files(input_dir))){
-        stop(paste("Incorrect 10X directory file names:", input_dir))
-    }
-    # remove trailing slashes 
-    input_dir = sub("/$", "", input_dir)
+opt = wsc_parse_args(option_list, mandatory = c("input_10x_dir", "output_cds"))
+
+# process input directory
+input_dir = opt$input_10x_dir 
+if(! file.exists(input_dir)) stop(paste('File', input_dir, 'does not exist'))
+# standard 10X-type directory is expected to contain matrix.mtx, genes.tsv and barcodes.tsv files
+if(!all(c("matrix.mtx", "barcodes.tsv", "genes.tsv") %in% list.files(input_dir))){
+    stop(paste("Incorrect 10X directory file names:", input_dir, "Directory must contain files 'matrix.mtx', 'barcodes.tsv' and 'genes.tsv'"))
 }
+# remove trailing slashes 
+input_dir = sub("/$", "", input_dir)
+
 # if input is OK, load main packages
 suppressPackageStartupMessages(require(garnett))
+ 
+# parse individual files into CDS object 
+expr_matrix = Matrix::readMM(paste(input_dir, "/matrix.mtx", sep=""))
+genes = read.table(paste(input_dir, "/genes.tsv", sep=""), sep="\t", stringsAsFactors=FALSE)
+row.names(genes) = genes[,1] 
+barcodes = read.table(paste(input_dir, "/barcodes.tsv", sep=""), sep="\t", stringsAsFactors=FALSE)
+row.names(barcodes) = barcodes[, 1]
 
-for(idx in 1:length(input_dirs)){
-    input_dir = input_dirs[idx] 
-    # parse individual files into CDS object 
-    expr_matrix = Matrix::readMM(paste(input_dir, "/matrix.mtx", sep=""))
-    genes = read.table(paste(input_dir, "/genes.tsv", sep=""), sep="\t")
-    barcodes = read.table(paste(input_dir, "/barcodes.tsv", sep=""), sep="\t")
-    # matrix entries need to be named
-    row.names(expr_matrix) = row.names(genes)
-    colnames(expr_matrix) = row.names(barcodes) #TODO: change this when testing on real 10x data 
+# matrix entries need to be named
+row.names(expr_matrix) = row.names(genes)
+colnames(expr_matrix) = row.names(barcodes)
 
-    cds = new_cell_data_set(as(expr_matrix, "dgCMatrix"), cell_metadata = barcodes, gene_metadata = genes)
-    saveRDS(cds, file = cds_names[idx])
-}
+cds = new_cell_data_set(as(expr_matrix, "dgCMatrix"), cell_metadata = barcodes, gene_metadata = genes)
+saveRDS(cds, file = opt$output_cds)
+
