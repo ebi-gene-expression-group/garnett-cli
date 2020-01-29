@@ -1,6 +1,9 @@
 #!/usr/bin/env Rscript
 
 # parse and transform marker file from SCXA's format into that accepted by Garnett
+# Marker gene files from SCXA come in tabular format. They are filtered according to p-value 
+# and then transformed into format as shown here: https://cole-trapnell-lab.github.io/garnett/docs/#constructing-a-marker-file
+
 
 # Load optparse we need to check inputs
 suppressPackageStartupMessages(require(optparse))
@@ -71,22 +74,26 @@ pval_cutoff = opt$pval_threshold
 groups_col = opt$groups_col
 names = opt$gene_names
 
+# df with SCXA markers
 markers_tbl = read.delim(opt$input_marker_file, stringsAsFactors = FALSE)
 # filter siginficant genes
 markers_tbl = markers_tbl[markers_tbl[, pval_col] <= pval_cutoff, , drop = FALSE]
+# extract distinct cell types/clusters 
 groups = unique(markers_tbl[, groups_col])
 markers_per_group = list()
 
 for(idx in 1:length(groups)){
     group = groups[idx]
+    # subset df by group and extract corresponding genes 
     tmp = markers_tbl[markers_tbl[, groups_col] == group, ]
     genes = tmp[, names]
     markers_per_group[[idx]] = genes
 }
 names(markers_per_group) = groups
+# save the list as RDS object as it will be re-used in marker filtering step
 saveRDS(markers_per_group, file = opt$marker_list)
 
-# write markers to garnett-formatted text file
+# write markers to garnett-formatted text file (see https://cole-trapnell-lab.github.io/garnett/docs/#constructing-a-marker-file)
 out_file = opt$garnett_marker_file
 if(file.exists(out_file)) file.remove(out_file)
 for(idx in 1:length(markers_per_group)){
