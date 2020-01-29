@@ -90,7 +90,7 @@ saveRDS(markers_per_group, file = opt$marker_list)
 out_file = opt$garnett_marker_file
 if(file.exists(out_file)) file.remove(out_file)
 for(idx in 1:length(markers_per_group)){
-    write(paste(">", names(markers_per_group)[idx], ":", sep=""), file=out_file, append = TRUE)
+    write(paste(">", names(markers_per_group)[idx], sep=""), file=out_file, append = TRUE)
     write(paste("expressed:", paste0(markers_per_group[[idx]], collapse=", ")), file=out_file, append = TRUE)
     write("\n", file = out_file, append = TRUE)
 }

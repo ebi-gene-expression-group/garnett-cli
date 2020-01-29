@@ -6,7 +6,8 @@
 
 script_name=$0
 # Initialise directories
-test_dir=`pwd`/test_dir
+test_dir=`pwd`/post_install_tests
+data_dir=$test_dir/'data'
 output_dir=$test_dir'/outputs'
 mkdir -p $test_dir
 mkdir -p $output_dir
@@ -46,21 +47,17 @@ fi
 ################################################################################
 # List tool outputs/ inputs
 ################################################################################
-export marker_file=$test_dir'/test_marker_file.txt'
+export marker_file=$data_dir'/ref_marker_genes.txt'
+export test_10x_dir=$data_dir'/10x_data'
 
-# Build directories with expression data 
-export expr_mat='matrix.mtx'
-export pheno_data='barcodes.tsv'
-export feature_data='genes.tsv'
-export test_10x_dir=$test_dir'/test_10x_dir'
-
-# reference and query CDS objects 
-export ref_CDS=$output_dir'/cds.rds' 
-export query_CDS=$output_dir'/cds.rds' # use the same file for training and prediction
+export transformed_markers=$output_dir'/markers_transformed.txt'
+export marker_list=$output_dir'/marker_list.rds'
+export garnett_CDS=$output_dir'/garnett_cds.rds' 
 
 # Check marker file 
 export DB='org.Hs.eg.db'
-export checked_markers=$output_dir'/markers_checked.txt'
+export marker_check=$output_dir'/marker_check.txt'
+export updated_markers=$output_dir'/markers_upd.txt'
 export marker_plot=$output_dir'/marker_plot.png'
 
 # Classifier training 
@@ -74,14 +71,21 @@ export tsne_plot=$output_dir'/tsne_plot.png'
 export tsne_plot_ext=$output_dir'/tsne_plot_ext.png'
 export cds_output_obj=$output_dir'/cds_pred_labs.rds'
 
-# Workflow parameters 
-export gene_id_type='SYMBOL'
-export marker_gene_type='SYMBOL'
+# Workflow parameters
+export pval_col='pvals' 
+export gene_id_type='ENSEMBL'
+export marker_gene_type='ENSEMBL'
 export classifier_gene_type='ENSEMBL'
 export n_outgroups=50
 export node='root'
 export convert_ids=true
 export cluster_extend=true
+
+################################################################################
+# Fetch test data
+################################################################################
+wget "https://www.ebi.ac.uk/~a_solovyev/garnett_cli_test_data.tar.gz" -P $test_dir
+tar -xzvf $test_dir/'garnett_cli_test_data.tar.gz' -C $test_dir  
 
 ################################################################################
 # Test individual scripts
