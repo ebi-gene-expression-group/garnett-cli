@@ -34,9 +34,8 @@ Currently available Garnett functions are listed in the following section. Each 
 If you are using raw experiment data, you can build a CDS object using the following script:
 
 ```
-parse_expr_data.R\
-          --input-10x-dir <10x-style expression data directory>\
-          --output-cds <output file path for query CDS object in .rds format> 
+parse_expr_data.R --input-10x-dir <10x-style expression data directory>\
+                  --output-cds <output file path for query CDS object in .rds format> 
 ```
 
 Please refer [here](http://cole-trapnell-lab.github.io/monocle-release/docs/#the-celldataset-class) for description of the file structure.
