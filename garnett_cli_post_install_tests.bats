@@ -1,65 +1,81 @@
 #!/usr/bin/env bats
 
-@test "Obtain raw data from the package" {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$expr_mat" ]; then
-        skip "$expr_mat exists and use_existing_outputs is set to 'true'"
+@test "Parse data into CDS object" {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$garnett_CDS" ]; then
+        skip "$garnett_CDS exists and use_existing_outputs is set to 'true'"
     fi
-    run rm -f $expr_mat $pheno_data $feature_data\
-        && make_test_data.R --marker-file $marker_file\
-                              --expr-matrix $expr_mat\
-                              --pheno-data $pheno_data\
-                              --feature-data $feature_data
-    echo "status = ${status}"
-    echo "output = ${output}"    
-    [ "$status" -eq 0 ]
-    [ -f "$marker_file" ]
-    [ -f "$expr_mat" ]
-    [ -f "$pheno_data" ]
-    [ -f "$feature_data" ]
-}
+    run rm -f $garnett_CDS && parse_expr_data.R\
+                                    --input-10x-dir $test_10x_dir\
+                                    --output-cds $garnett_CDS
 
-@test "Parse raw data into CDS object " {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$CDS" ]; then
-        skip "$CDS_rebuilt exists and use_existing_outputs is set to 'true'"
-    fi
-    run rm -f $CDS && parse_expr_data.R -e $expr_mat\
-                                          -p $pheno_data\
-                                          -f $feature_data\
-                                          -o $CDS
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
-    [ -f $CDS ]
+    [ -f $garnett_CDS ]
 }
 
+
+@test "Transform markers file into Garnett-compatible format" {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$transformed_markers" ]; then
+          skip "$transformed_markers exists and use_existing_outputs is set to 'true'"
+    fi
+    run rm -f $transformed_markers && transform_marker_file.R\
+                                            --input-marker-file $marker_file\
+                                            --marker-list $marker_list\
+                                            --pval-col $pval_col\
+                                            --garnett-marker-file $transformed_markers
+
+    echo "status = ${status}"
+    echo "output = ${output}"
+    [ "$status" -eq 0 ]
+    [ -f $transformed_markers ]
+}
+
+
 @test "Check marker file" {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$checked_markers" ] &&\
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$marker_check" ] &&\
        [ -f "$marker_plot" ]; then
-        skip "$checked_markers and $marker_plot exist and use_existing_outputs\
+        skip "$marker_check and $marker_plot exist and use_existing_outputs\
               is set to 'true'"
     fi
-    run rm -f $checked_markers $marker_plot &&\
-              garnett_check_markers.R -c $CDS -m $marker_file\
+    run rm -f $marker_check $marker_plot &&\
+              garnett_check_markers.R -c $garnett_CDS -m $transformed_markers\
                                            --cds-gene-id-type $gene_id_type\
-                                           -d $DB -o $checked_markers\
+                                           --marker-file-gene-id-type $marker_gene_type\
+                                           -d $DB -o $marker_check\
                                            --plot-output-path $marker_plot
 
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
-    [ -f $checked_markers ]
+    [ -f $marker_check ]
     [ -f $marker_plot ]
+}
+
+@test "Update markers" {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$updated_markers" ]; then
+       skip "$updated_markers exists and use_existing_outputs is set to 'true'"
+    fi
+
+    run rm -f $updated_markers && update_marker_file.R\
+                                        --marker-list-obj $marker_list\
+                                        --marker-check-file $marker_check\
+                                        --updated-marker-file $updated_markers
+
+    echo "status = ${status}"
+    echo "output = ${output}"
+    [ "$status" -eq 0 ]
+    [ -f $updated_markers ]
 }
 
 @test "Classifier training " {
     if [ "$use_existing_outputs" = 'true' ] &&\
        [ -f "$trained_classifier" ]; then
-        skip "$trained_classifier exists and use_existing_outputs\
-              is set to 'true'"
+        skip "$trained_classifier exists and use_existing_outputs is set to 'true'"
     fi
     run rm -f $trained_classifier &&\
-     garnett_train_classifier.R  -c $CDS\
-                                   -m $marker_file\
+    garnett_train_classifier.R  -c $garnett_CDS\
+                                   -m $updated_markers\
                                    --cds-gene-id-type $gene_id_type\
                                    --marker-file-gene-id-type $marker_gene_type\
                                    --classifier-gene-id-type $classifier_gene_type\
@@ -72,6 +88,7 @@
 }
 
 @test "Obtain feature genes " {
+    skip # skip because of internal bug in Garnett, remove when it's resolved
     if [ "$use_existing_outputs" = 'true' ] && [ -f "$feature_genes" ]; then
         skip "$feature_genes exists and use_existing_outputs is set to 'true'"
     fi
@@ -86,17 +103,17 @@
 }
 
 @test "Classify cells" {
-    if [ "$use_existing_outputs" = 'true' ] && [ -f "$tsne_plot" ]; then
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$cds_output_obj" ]; then
         skip "$tsne_plot exists and use_existing_outputs is set to 'true'"
     fi
 
-    run rm -f $tsne_plot $tsne_plot_ext && garnett_classify_cells.R\
-                                           -i $CDS_copy -c $trained_classifier\
+    run rm -f $cds_output_obj && garnett_classify_cells.R\
+                                           --cds-object $garnett_CDS\
+                                           --classifier-object $trained_classifier\
                                            -d $DB --cds-gene-id-type $gene_id_type\
-                                           --cluster-extend -p $tsne_plot
+                                           --cds-output-obj $cds_output_obj
     echo "status = ${status}"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
-    [ -f $tsne_plot ]
-    [ -f $tsne_plot_ext ]
+    [ -f $cds_output_obj ]
 }

@@ -6,7 +6,8 @@
 
 script_name=$0
 # Initialise directories
-test_dir=`pwd`/test_dir
+test_dir=`pwd`/post_install_tests
+data_dir=$test_dir/'data'
 output_dir=$test_dir'/outputs'
 mkdir -p $test_dir
 mkdir -p $output_dir
@@ -36,7 +37,6 @@ if [ "$use_existing_outputs" != 'true' ] &&\
 fi
 
 # Clean up if specified
-
 if [ "$action" = 'clean' ]; then
     echo "Cleaning up $output_dir ..."
     rm -rf $output_dir
@@ -47,22 +47,17 @@ fi
 ################################################################################
 # List tool outputs/ inputs
 ################################################################################
+export marker_file=$data_dir'/ref_marker_genes.txt'
+export test_10x_dir=$data_dir'/10x_data'
 
-# Main inputs for the workflow
-export CDS=$test_dir'/test_cds.rds'
-export marker_file=$test_dir'/test_marker_file.txt'
-
-# Make raw test data from provided CDS object 
-export expr_mat=$output_dir'/expression_matrix.mtx'
-export pheno_data=$output_dir'/pheno_data.txt'
-export feature_data=$output_dir'/feature_data.txt'
-
-# Parse raw data back into CDS object 
-#export CDS_rebuilt=$output_dir'/cds_rebuilt.rds'
+export transformed_markers=$output_dir'/markers_transformed.txt'
+export marker_list=$output_dir'/marker_list.rds'
+export garnett_CDS=$output_dir'/garnett_cds.rds' 
 
 # Check marker file 
 export DB='org.Hs.eg.db'
-export checked_markers=$output_dir'/markers_checked.txt'
+export marker_check=$output_dir'/marker_check.txt'
+export updated_markers=$output_dir'/markers_upd.txt'
 export marker_plot=$output_dir'/marker_plot.png'
 
 # Classifier training 
@@ -72,15 +67,14 @@ export trained_classifier=$output_dir'/trained_classifier.rds'
 export feature_genes=$output_dir'/feature_genes.txt'
 
 # Classify cells 
-# copy to allow classificaion several times
-export CDS_copy=$output_dir'/test_cds_copy.rds' 
-cp $CDS $CDS_copy 
 export tsne_plot=$output_dir'/tsne_plot.png'
 export tsne_plot_ext=$output_dir'/tsne_plot_ext.png'
+export cds_output_obj=$output_dir'/cds_pred_labs.rds'
 
-# Workflow parameters 
-export gene_id_type='SYMBOL'
-export marker_gene_type='SYMBOL'
+# Workflow parameters
+export pval_col='pvals' 
+export gene_id_type='ENSEMBL'
+export marker_gene_type='ENSEMBL'
 export classifier_gene_type='ENSEMBL'
 export n_outgroups=50
 export node='root'
@@ -88,11 +82,17 @@ export convert_ids=true
 export cluster_extend=true
 
 ################################################################################
+# Fetch test data
+################################################################################
+wget "https://www.ebi.ac.uk/~a_solovyev/garnett_cli_test_data.tar.gz" -P $test_dir
+tar -xzvf $test_dir/'garnett_cli_test_data.tar.gz' -C $test_dir  
+
+################################################################################
 # Test individual scripts
 ################################################################################
 
 export use_existing_outputs
 tests_file="${script_name%.*}".bats
-# Execute the tests
+# Execute tests
 $tests_file
 
