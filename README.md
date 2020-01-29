@@ -18,6 +18,7 @@ conda config --add channels conda-forge
 ```
 
 We recommend you use a fresh environment to install the package: 
+
 ```
 conda create --name <garnett-env>
 conda activate <garnett-env>
