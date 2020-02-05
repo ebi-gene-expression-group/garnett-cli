@@ -70,6 +70,7 @@ export feature_genes=$output_dir'/feature_genes.txt'
 export tsne_plot=$output_dir'/tsne_plot.png'
 export tsne_plot_ext=$output_dir'/tsne_plot_ext.png'
 export cds_output_obj=$output_dir'/cds_pred_labs.rds'
+export garnett_output_tbl=$output_dir'/garnett_output_tbl.txt'
 
 # Workflow parameters
 export pval_col='pvals' 
