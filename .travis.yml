@@ -22,10 +22,7 @@ before_install:
       conda config --add channels bioconda;
 
       #list dependencies
-      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base
-                         r-optparse r-cairo r-workflowscriptscommon
-                         r-garnett=0.2.8 r-ggplot2 r-monocle3 bioconductor-singlecellexperiment=1.6.0
-                         r-glmnet=2.0_18 bioconductor-org.Hs.eg.db bioconductor-org.Mm.eg.db
+      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-cairo r-workflowscriptscommon r-garnett=0.2.8 r-ggplot2 r-monocle3 bioconductor-singlecellexperiment=1.6.0 r-glmnet=2.0_18 bioconductor-org.Hs.eg.db bioconductor-org.Mm.eg.db;
     fi
 
 install:
