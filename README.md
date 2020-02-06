@@ -112,7 +112,3 @@ make_test_data.R --marker-file <output path for marker file in .txt format>\
                  --pheno-data <output path for phenotype data in .txt format>
                  --feature-data <output path for gene features in .txt format>
 ```
-
-
-
-
