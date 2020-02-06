@@ -63,12 +63,3 @@ predicted_label = as.character(cell_meta[, opt$predicted_cell_type_field])
 output_table = data.frame(cbind(cell_id, predicted_label))
 colnames(output_table) = c("cell_id", "predicted_label")
 write.table(output_table, row.names = FALSE, file = opt$output_file_path, sep="\t")
-
-
-
-
-
-
-
-
-
