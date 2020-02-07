@@ -31,7 +31,7 @@ install:
 before_script:
     - export PATH=`pwd`:$PATH
 
-script: ./garnett_cli_post_install_tests.sh
+script: garnett_cli_post_install_tests.sh
 
 cache:
     directories:

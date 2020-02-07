@@ -4,7 +4,7 @@
     if [ "$use_existing_outputs" = 'true' ] && [ -f "$garnett_CDS" ]; then
         skip "$garnett_CDS exists and use_existing_outputs is set to 'true'"
     fi
-    run rm -f $garnett_CDS && monocle3 create ref_cds.rds\
+    run rm -f $garnett_CDS && monocle3 create $garnett_CDS\
                                   --expression-matrix $test_10x_dir/'matrix.mtx'\
                                   --cell-metadata $test_10x_dir/'barcodes.tsv'\
                                   --gene-annotation $test_10x_dir/'genes.tsv'
