@@ -6,7 +6,7 @@ suppressPackageStartupMessages(require(optparse))
 suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # Using information from CDS object, determine which markers are suitable 
-# for identification of cell type. See Garnett publication for more details.
+# for identification of cell type. See Garnett publication for more details
 
 # parse options 
 option_list = list(
