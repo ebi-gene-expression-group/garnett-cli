@@ -21,7 +21,7 @@ before_install:
       conda config --add channels conda-forge;
       conda config --add channels bioconda;
 
-      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-cairo r-workflowscriptscommon r-garnett=0.2.8 r-ggplot2 monocle3-cli=0.0.6 bioconductor-singlecellexperiment=1.6.0 r-glmnet=2.0_18 bioconductor-org.Hs.eg.db bioconductor-org.Mm.eg.db;
+      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-cairo r-workflowscriptscommon r-garnett=0.2.8 r-ggplot2 monocle3-cli=0.0.7 bioconductor-singlecellexperiment=1.8.0 r-glmnet=2.0_18 bioconductor-org.Hs.eg.db bioconductor-org.Mm.eg.db;
     fi
 
 install:
@@ -36,8 +36,8 @@ script: garnett_cli_post_install_tests.sh
 cache:
     directories:
         - $HOME/miniconda
-        - test_dir
+
 before_cache:
-    - if ! [[ $TRAVIS_TAG ]]; then rm -rf $HOME/miniconda/conda-bld; fi
-    - rm -rf post_install_tests/outputs
-    - rm -rf $HOME/miniconda/locks $HOME/miniconda/pkgs $HOME/miniconda/var $HOME/miniconda/conda-meta/history
+- if ! [[ $TRAVIS_TAG ]]; then rm -rf $HOME/miniconda/conda-bld; fi
+- rm -rf post_install_tests/outputs
+- rm -rf $HOME/miniconda/locks $HOME/miniconda/pkgs $HOME/miniconda/var $HOME/miniconda/conda-meta/history

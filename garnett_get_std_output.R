@@ -34,6 +34,14 @@ option_list = list(
     ), 
 
     make_option(
+        c("-k", "--classifier"),
+        action = 'store',
+        default = NA,
+        type = 'character',
+        help = 'Path to the classifier object in .rds format (Optional; required to add dataset of origin to output table)'
+    ),
+
+    make_option(
         c("-o", "--output-file-path"),
         action = "store",
         default = NA,
@@ -62,5 +70,16 @@ if(!is.na(opt$cell_id_field)){
 predicted_label = as.character(cell_meta[, opt$predicted_cell_type_field])
 output_table = data.frame(cbind(cell_id, predicted_label))
 colnames(output_table) = c("cell_id", "predicted_label")
-write.table(output_table, row.names = FALSE, file = opt$output_file_path, sep="\t")
 
+
+# add metadata if classifier is specified 
+append = FALSE
+if(!is.na(opt$classifier)){
+    append = TRUE
+    cl = readRDS(opt$classifier)
+    dataset = attributes(cl)$dataset
+    system(paste("echo '# tool garnett' >", opt$output_file_path))
+    system(paste("echo '# dataset'", dataset, ">>", opt$output_file_path))
+}
+
+write.table(output_table, row.names = FALSE, file = opt$output_file_path, sep="\t", append=append)

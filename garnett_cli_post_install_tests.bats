@@ -77,6 +77,7 @@
     run rm -f $trained_classifier &&\
     garnett_train_classifier.R  -c $garnett_CDS\
                                    -m $updated_markers\
+                                   --train-idf $train_idf\
                                    --cds-gene-id-type $gene_id_type\
                                    --marker-file-gene-id-type $marker_gene_type\
                                    --classifier-gene-id-type $classifier_gene_type\
@@ -126,6 +127,7 @@
 
   run rm -f $garnett_output_tbl && garnett_get_std_output.R\
                                         --input-object $cds_output_obj\
+                                        --classifier $trained_classifier\
                                         --output-file-path $garnett_output_tbl
   
   echo "status = ${status}"
