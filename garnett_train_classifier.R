@@ -39,6 +39,13 @@ option_list = list(
                 For example, use org.Hs.eg.db for Homo Sapiens genes."
     ),
     make_option(
+        c("-f", "--train-idf"), 
+        action = "store",
+        default = NA,
+        type = 'character',
+        help = 'Path to the training data IDF file (optional)'
+   ),
+   make_option(
         c("--cds-gene-id-type"),
         action = "store",
         default = "ENSEMBL",
@@ -161,5 +168,15 @@ classifier = train_cell_classifier(cds = cds,
                                    cores = opt$cores, 
                                    lambdas = lambdas,
                                    classifier_gene_id_type = opt$classifier_gene_id_type)
+
+# add dataset field to the object 
+if(!is.na(opt$train_idf)){
+    idf = readLines(opt$train_idf)
+    L = idf[grep("ExpressionAtlasAccession", idf)]
+    dataset = unlist(strsplit(L, "\\t"))[2]
+    attributes(classifier)$dataset = dataset
+    } else{
+        attributes(classifier)$dataset = NA
+    }
 
 saveRDS(classifier, file = opt$output_path)

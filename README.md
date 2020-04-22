@@ -81,6 +81,7 @@ Although a range of [pre-trained classifiers](https://cole-trapnell-lab.github.i
 ```
 garnett_train_classifier.R --cds-object <path to CDS object in .rds format>\
                            --marker-file-path <path to marker file in .txt format>\
+                           --train-idf <Path to the training data IDF file (optional)>\
                            --database <name of gene database (e.g. org.Hs.eg.db for Homo Sapiens genes)>\
                            --output-path <output path for the trained classifier in .rds format>
 ```
@@ -104,10 +105,21 @@ garnett_classify_cells.R --cds-object <path to CDS object in .rds format>
 ```
 Classification column will be added to the CDS object's metadata as an additional column. **Note**: to repeat classification on the same CDS object you will need first to delete the column with previous classification result. 
 
-### make_test_data(): Obtain test data
+### get standard-format output for downstream analysis
+```
+garnett_get_std_output.R\
+                    --input-object <Path to the input CDS object in .rds format>\
+                    --cell-id-field <Column name of the cell id annotations. If not supplied, it is assumed that cell ids are represented by index>\
+                    --predicted-cell-type-field <Column name of the predicted cell type annotation>\
+                    --classifier <Path to the classifier object in .rds format (Optional; required to add dataset of origin to output table)>\
+                    --output-file-path <Path to the produced output file in .tsv format>
+```
+
+### get_package_data(): Obtain test data
 In case you would like to extract raw data for the test CDS object and example marker file, run: 
 ```
-make_test_data.R --marker-file <output path for marker file in .txt format>\
+get_package_data.R\
+                 --marker-file <output path for marker file in .txt format>\
                  --expr-matrix <output path for extracted expression matrix in .txt format>\
                  --pheno-data <output path for phenotype data in .txt format>
                  --feature-data <output path for gene features in .txt format>
