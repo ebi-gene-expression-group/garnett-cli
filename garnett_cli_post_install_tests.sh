@@ -50,7 +50,7 @@ fi
 export marker_file=$data_dir'/ref_marker_genes.txt'
 export test_10x_dir=$data_dir'/10x_data'
 
-export train_idf=$test_dir/'E-ENAD-16.idf.txt'
+export train_id='E-ENAD-16'
 export transformed_markers=$output_dir'/markers_transformed.txt'
 export marker_list=$output_dir'/marker_list.rds'
 export garnett_CDS=$output_dir'/garnett_cds.rds' 
@@ -87,9 +87,6 @@ export cluster_extend=true
 # Fetch test data
 ################################################################################
 wget "https://www.ebi.ac.uk/~a_solovyev/garnett_cli_test_data.tar.gz" -P $test_dir
-# export test IDF file (has no relation to training data)
-wget "ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/atlas/sc_experiments/E-ENAD-16/E-ENAD-16.idf.txt" -P $test_dir
-
 tar -xzvf $test_dir/'garnett_cli_test_data.tar.gz' -C $test_dir  
 
 ################################################################################

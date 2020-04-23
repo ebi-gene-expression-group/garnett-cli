@@ -77,7 +77,7 @@
     run rm -f $trained_classifier &&\
     garnett_train_classifier.R  -c $garnett_CDS\
                                    -m $updated_markers\
-                                   --train-idf $train_idf\
+                                   --train-id $train_id\
                                    --cds-gene-id-type $gene_id_type\
                                    --marker-file-gene-id-type $marker_gene_type\
                                    --classifier-gene-id-type $classifier_gene_type\
