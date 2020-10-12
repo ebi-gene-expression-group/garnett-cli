@@ -46,7 +46,7 @@ option_list = list(
     make_option(
         c("--marker-file-gene-id-type"),
         action = "store",
-        default = "SYMBOL",
+        default = "ENSEMBL",
         type = 'character',
         help = "Format of the gene IDs in your marker file.
                 The default is \"ENSEMBL\"."
@@ -129,6 +129,18 @@ suppressPackageStartupMessages(require(opt$database, character.only = TRUE))
 opt$database = get(opt$database)
 # if input is OK, load the package
 suppressPackageStartupMessages(require(garnett))
+
+# check the contents of marker file
+markers = readLines(opt$marker_file_path)
+.check_char = function(line){
+    if(startsWith(line, ">")){
+        line = gsub("[^-A-Za-z0-9>+ ]","_", line)
+    }
+    return(line)
+}
+markers = sapply(markers, .check_char)
+# write data back to the same path 
+writeLines(markers, opt$marker_file_path) 
 
 # read the CDS object
 cds = readRDS(opt$cds_object)
