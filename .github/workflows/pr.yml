@@ -1,0 +1,39 @@
+name: GitHub Actions CI
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - develop
+  pull_request:
+    branches:
+      - 'feature/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.10"]  # Add any other Python versions you want to test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: '1.4.5-0'
+          environment-file: test-env.yaml
+          init-shell: >-
+            bash
+          cache-environment: true
+          create-args: |
+            python=${{ matrix.python-version }}
+          post-cleanup: 'all'
+
+      - name: Run tests
+        shell: bash -el {0}
+        run: |
+          export PATH=$( pwd ):$PATH
+          garnett_cli_post_install_tests.sh
